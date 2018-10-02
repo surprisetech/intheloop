@@ -1,6 +1,6 @@
 import string
 
-from flask import Flask, send_file
+from flask import Flask, send_file, json
 import praw
 from wordOps import countWords
 from config import RedditConfig
@@ -28,6 +28,14 @@ def index():
     return send_file('public/index.html')
 
 
+@app.route('/count/<sr>')
+def wordCountSubreddit(sr):
+    submissions = reddit.subreddit(sr).top(time_filter='day', limit=100)
+    posts = map(lambda x: x.selftext, submissions)
+    sortedWords = countWords(posts, punctRm, excludeWordsList)
+    return json.jsonify(sortedWords)
+
+
 punctRm = str.maketrans('', '', string.punctuation + "“”’")
 excludeWordsList = ['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'on',
                     'at', 'to', 'from', 'by', 'we', 'of', 'as', 'do', 'up', 'if', 'i', 'you', 'are', 'they',
@@ -35,9 +43,3 @@ excludeWordsList = ['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'on',
                     'this', 'he', 'that', 'it\'s', 'cunt', 'fuck', 'like', 'not', 'your', 'don\'t', 'she',
                     'his', 'her', 'just', 'when', 'so', 'got', 'get', 'what', 'why', 'who', 'how', 'would',
                     'should', 'could', 'some', 'can', 'you\'re', 'about', 'which', 'had', 'want', 'made']
-
-submissions = reddit.subreddit('tifu').top(time_filter='day', limit=100)
-posts = map(lambda x: x.selftext, submissions)
-sortedWords = countWords(posts, punctRm, excludeWordsList)
-
-print(sortedWords)
