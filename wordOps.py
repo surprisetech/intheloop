@@ -10,7 +10,6 @@ def countWords(textList, punctRm, excludeWordsList):
     wordCount = dict()
     for post in textList:
         punctLess = post.translate(punctRm)
-        print(punctLess)
         words = map(lambda x: x.lower(), punctLess.split())
         for word in words:
             if word in wordCount:
