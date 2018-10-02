@@ -31,9 +31,7 @@ def index():
 @app.route('/count/<sr>')
 def wordCountSubreddit(sr):
     submissions = reddit.subreddit(sr).top(time_filter='day', limit=100)
-    posts = list(map(lambda x: x.selftext, submissions))
-    titles = list(map(lambda x: x.title, submissions))
-    posts.extend(titles)
+    posts = list(map(lambda x: x.selftext + " " + x.title, submissions))
     sortedWords = countWords(posts, punctRm, excludeWordsList)
     return json.jsonify(sortedWords)
 
