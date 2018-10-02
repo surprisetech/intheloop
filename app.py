@@ -1,5 +1,8 @@
+import string
+
 from flask import Flask, send_file
 import praw
+from wordOps import countWords
 from config import RedditConfig
 
 # Send "public/any.name" when route "<site>.com/{any.name}" is hit
@@ -23,3 +26,18 @@ reddit = praw.Reddit(client_id=RedditConfig.id,
 @app.route('/')
 def index():
     return send_file('public/index.html')
+
+
+punctRm = str.maketrans('', '', string.punctuation + "“”’")
+excludeWordsList = ['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'on',
+                    'at', 'to', 'from', 'by', 'we', 'of', 'as', 'do', 'up', 'if', 'i', 'you', 'are', 'they',
+                    'it', 'our', 'be', 'is', 'in', 'my', 'with', 'have', 'has', 'no', 'how', 'was', 'very',
+                    'this', 'he', 'that', 'it\'s', 'cunt', 'fuck', 'like', 'not', 'your', 'don\'t', 'she',
+                    'his', 'her', 'just', 'when', 'so', 'got', 'get', 'what', 'why', 'who', 'how', 'would',
+                    'should', 'could', 'some', 'can', 'you\'re', 'about', 'which', 'had', 'want', 'made']
+
+submissions = reddit.subreddit('tifu').top(time_filter='day', limit=100)
+posts = map(lambda x: x.selftext, submissions)
+sortedWords = countWords(posts, punctRm, excludeWordsList)
+
+print(sortedWords)
