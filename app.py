@@ -24,7 +24,7 @@ reddit = praw.Reddit(client_id=RedditConfig.id,
 
 # Remap '/' to index. Other files can be served statically.
 @app.route('/')
-def index(sr):
+def index():
     return send_file('public/index.html')
 
 def newPosts(sr):
@@ -54,7 +54,6 @@ def wordCountSubreddit(sr, category):
 			   "controversalall":controversalPast24Hours(sr),
 			   "controversal24hrs":controversalPast24Hours(sr),
 	}
-    #submissions = reddit.subreddit(sr).top(time_filter='day', limit=100)
 	submissions = switch.get(category)
 	posts = list(map(lambda x: x.selftext + " " + x.title, submissions))
 	sortedWords = countWords(posts, punctRm, excludeWordsList)
