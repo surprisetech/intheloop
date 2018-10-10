@@ -27,13 +27,37 @@ reddit = praw.Reddit(client_id=RedditConfig.id,
 def index():
     return send_file('public/index.html')
 
+def newPosts(sr):
+	return reddit.subreddit(sr).new(limit=100)
 
-@app.route('/count/<sr>')
-def wordCountSubreddit(sr):
-    submissions = reddit.subreddit(sr).top(time_filter='day', limit=100)
-    posts = list(map(lambda x: x.selftext + " " + x.title, submissions))
-    sortedWords = countWords(posts, punctRm, excludeWordsList)
-    return json.jsonify(sortedWords)
+def hotPosts(sr):
+	return reddit.subreddit(sr).hot(limit=100)
+
+def topPostsAllTime(sr):
+	return reddit.subreddit(sr).top(time_filter='all', limit=100)
+	
+def topPostsPast24Hours(sr):
+	return reddit.subreddit(sr).top(time_filter='day', limit=100)	
+
+def controversalPostsAllTime(sr):
+	return reddit.subreddit(sr).controversial(time_filter = 'all', limit=100)
+	
+def controversalPast24Hours(sr):
+	return reddit.subreddit(sr).controversial(time_filter = 'day', limit=100)
+
+@app.route('/count/<sr>/<category>/')
+def wordCountSubreddit(sr, category):
+	switch = {"new":newPosts(sr),
+			   "hot":hotPosts(sr),
+			   "topalltime":topPostsAllTime(sr),
+			   "top24hrs":topPostsPast24Hours(sr),
+			   "controversalall":controversalPast24Hours(sr),
+			   "controversal24hrs":controversalPast24Hours(sr),
+	}
+	submissions = switch.get(category)
+	posts = list(map(lambda x: x.selftext + " " + x.title, submissions))
+	sortedWords = countWords(posts, punctRm, excludeWordsList)
+	return json.jsonify(sortedWords)
 
 
 punctRm = str.maketrans('', '', string.punctuation + "“”’")
