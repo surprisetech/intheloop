@@ -45,6 +45,7 @@ def controversalPostsAllTime(sr):
 def controversalPast24Hours(sr):
 	return reddit.subreddit(sr).controversial(time_filter = 'day', limit=100)
 
+
 @app.route('/count/<sr>/<category>/')
 def wordCountSubreddit(sr, category):
 	switch = {"new":newPosts(sr),
@@ -70,6 +71,13 @@ def wordCountSubreddit(sr, category):
 	plt.bar(range(len(labels)), values, tick_label=labels)
 
 	return mpld3.fig_to_html(fig)
+
+#word popularity by user-KT
+@app.route('/count/<user>/')
+def wordCountUser(user):
+	userOutput
+	user = list(map(lambda x: x.name + " " + x.word, userOutput ))
+	return json.jsonify(user)
 
 
 punctRm = str.maketrans('', '', string.punctuation + "“”’")
