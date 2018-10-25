@@ -1,0 +1,9 @@
+language: python
+python:
+  - "3.6"
+install:
+  - pip install praw
+  - pip install matplotlib
+  - pip install mpld3
+script:
+  - pytest
