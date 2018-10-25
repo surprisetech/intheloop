@@ -6,5 +6,7 @@ install:
   - pip install matplotlib
   - pip install mpld3
   - pip install jinja2
+notifications:
+    slack: surprisetech:j8bAuVBQphzqvvpkfZ2FDSXs
 script:
   - pytest
