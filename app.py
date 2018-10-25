@@ -37,15 +37,12 @@ def topPostsAllTime(sr):
 	return reddit.subreddit(sr).top(time_filter='all', limit=100)
 	
 def topPostsPast24Hours(sr):
-	print("topPostsPast24Hours")
 	return reddit.subreddit(sr).top(time_filter='day', limit=100)	
 
 def controversalPostsAllTime(sr):
-	print("controversalPostsAllTime")
 	return reddit.subreddit(sr).controversial(time_filter = 'all', limit=100)
 	
 def controversalPast24Hours(sr):
-	print("controversalPast24Hours")
 	return reddit.subreddit(sr).controversial(time_filter = 'day', limit=100)
 
 
