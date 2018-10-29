@@ -3,18 +3,18 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
 
-@given(u'we are browsing http://127.0.0.1:5000')
+@given(u'we are browsing surprisetech.pythonanywhere.com/')
 def step_impl(context):
     browser = webdriver.Chrome()
     context.browser = browser 
-    browser.get("http://127.0.0.1:5000")
+    browser.get("http://surprisetech.pythonanywhere.com")
     time.sleep(4)
     #assert "Welcome" in browser.title
 
 @when(u'we search tifu subreddit and {category}')
 def step_impl(context,category):
     browser = context.browser
-    browser.get("http://127.0.0.1:5000/count/tifu/" + category)
+    browser.get("http://surprisetech.pythonanywhere.com/count/tifu/" + category)
     
 @then(u'we should see bar graphs')
 def step_impl(context):
