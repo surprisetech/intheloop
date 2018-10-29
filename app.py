@@ -45,6 +45,7 @@ def controversalPostsAllTime(sr):
 def controversalPast24Hours(sr):
 	return reddit.subreddit(sr).controversial(time_filter = 'day', limit=100)
 
+
 @app.route('/count/<sr>/<category>/')
 def wordCountSubreddit(sr, category):
 	switch = {"new":newPosts(sr),
@@ -57,13 +58,40 @@ def wordCountSubreddit(sr, category):
 	submissions = switch.get(category)
 	posts = list(map(lambda x: x.selftext + " " + x.title, submissions))
 	sortedWords = countWords(posts, punctRm, excludeWordsList)
+	sortedWords = sortedWords[:50]
 	labels = list()
 	values = list()
 	for word in sortedWords:
 		labels.append(word[0])
 		values.append(word[1])
-	labels = labels[:50]
-	values = values[:50]
+
+	# Generate chart.
+	fig = plt.figure()
+	plt.bar(range(len(labels)), values, tick_label=labels)
+
+	return mpld3.fig_to_html(fig)
+
+#word popularity by user-KT
+@app.route('/count/<user>/')
+def wordCountUser(user):
+	user = reddit.redditor(name=user)
+	comments = user.comments.hot(limit=100)
+	submissions = user.submissions.hot(limit=100)
+
+	usersText = list()
+	for comment in comments:
+		usersText.append(comment.body)
+
+	for sub in submissions:
+		usersText.append(sub.selftext)
+
+	sortedWords = countWords(usersText, punctRm, excludeWordsList)
+	sortedWords = sortedWords[:50]
+	labels = list()
+	values = list()
+	for word in sortedWords:
+		labels.append(word[0])
+		values.append(word[1])
 
 	# Generate chart.
 	fig = plt.figure()
