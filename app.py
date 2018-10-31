@@ -46,7 +46,7 @@ def controversalPast24Hours(sr):
 	return reddit.subreddit(sr).controversial(time_filter = 'day', limit=100)
 
 
-@app.route('/count/<sr>/<category>/')
+@app.route('/r/<sr>/<category>/')
 def wordCountSubreddit(sr, category):
 	switch = {"new":newPosts(sr),
 			   "hot":hotPosts(sr),
@@ -72,7 +72,7 @@ def wordCountSubreddit(sr, category):
 	return mpld3.fig_to_html(fig)
 
 #word popularity by user-KT
-@app.route('/count/<user>/')
+@app.route('/u/<user>/')
 def wordCountUser(user):
 	user = reddit.redditor(name=user)
 	comments = user.comments.hot(limit=100)
