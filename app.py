@@ -1,12 +1,12 @@
 import string
-import matplotlib.pyplot as plt, mpld3
-from flask import Flask, send_file, json, render_template
+
+from Flask import Flask, send_file, json
 import praw
 from wordOps import countWords
 from config import RedditConfig
 
 # Send "public/any.name" when route "<site>.com/{any.name}" is hit
-app = Flask(__name__, static_url_path="", static_folder="static")
+app = Flask(__name__, static_url_path="", static_folder="public")
 
 # Initialize PRAW (reddit wrapper) from config.py
 # DO NOT push config.py to github, we do not want to
@@ -25,7 +25,7 @@ reddit = praw.Reddit(client_id=RedditConfig.id,
 # Remap '/' to index. Other files can be served statically.
 @app.route('/')
 def index():
-	return send_file('templates/index.html')
+    return send_file('public/index.html')
 
 def newPosts(sr):
 	return reddit.subreddit(sr).new(limit=100)
@@ -58,46 +58,14 @@ def wordCountSubreddit(sr, category):
 	submissions = switch.get(category)
 	posts = list(map(lambda x: x.selftext + " " + x.title, submissions))
 	sortedWords = countWords(posts, punctRm, excludeWordsList)
-	sortedWords = sortedWords[:50]
-	labels = list()
-	values = list()
-	for word in sortedWords:
-		labels.append(word[0])
-		values.append(word[1])
-
-	# Generate chart.
-	fig = plt.figure()
-	plt.bar(range(len(labels)), values, tick_label=labels)
-
-	return mpld3.fig_to_html(fig)
+	return json.jsonify(sortedWords)
 
 #word popularity by user-KT
 @app.route('/count/<user>/')
 def wordCountUser(user):
-	user = reddit.redditor(name=user)
-	comments = user.comments.hot(limit=100)
-	submissions = user.submissions.hot(limit=100)
-
-	usersText = list()
-	for comment in comments:
-		usersText.append(comment.body)
-
-	for sub in submissions:
-		usersText.append(sub.selftext)
-
-	sortedWords = countWords(usersText, punctRm, excludeWordsList)
-	sortedWords = sortedWords[:50]
-	labels = list()
-	values = list()
-	for word in sortedWords:
-		labels.append(word[0])
-		values.append(word[1])
-
-	# Generate chart.
-	fig = plt.figure()
-	plt.bar(range(len(labels)), values, tick_label=labels)
-
-	return mpld3.fig_to_html(fig)
+	userOutput #need to define this
+	user = list(map(lambda x: x.name + " " + x.word, userOutput ))
+	return json.jsonify(user)
 
 
 punctRm = str.maketrans('', '', string.punctuation + "“”’")
