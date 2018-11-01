@@ -9,7 +9,7 @@ addons:
 python: 
   - "3.6"
 before_install:
-  - "pip3 install -r docs/requirements.txt"
+  - "pip3 install -r requirements.txt"
 notifications:
     slack: surprisetech:j8bAuVBQphzqvvpkfZ2FDSXs
 script:
