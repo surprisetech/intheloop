@@ -1,8 +1,7 @@
 # def countWords(textList, punctRm, excludeWordsList):
 
 import string
-from wordOps import countWords
-from app import punctRm
+from wordOps import countWords, punctRm
 
 # sample excludeWordsList
 excludeWordsList = ['abbra','kadabra','hoccus','poccus']
