@@ -208,7 +208,7 @@ punctRm = str.maketrans('', '', '!?@')
 test = countWords(['?!','!!', '??', '@!?'], punctRm,excludeWordsList)
 assert len(test) == 0
 
-from app import punctRm
+from wordOps import punctRm
 test = countWords(['!@#%%!','??/\'!@#', '&^%$', '?!@#>!@$'], punctRm,excludeWordsList)
 assert len(test) == 0
 
