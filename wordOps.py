@@ -1,4 +1,4 @@
-
+import string
 
 def countWords(textList, punctRm, excludeWordsList):
     """
@@ -20,3 +20,12 @@ def countWords(textList, punctRm, excludeWordsList):
     sortedWords = sorted([x for x in sortedWords], key=lambda x: x[1], reverse=True)
 
     return sortedWords
+
+
+punctRm = str.maketrans('', '', string.punctuation + "“”’")
+excludeWordsList = ['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'on',
+                    'at', 'to', 'from', 'by', 'we', 'of', 'as', 'do', 'up', 'if', 'i', 'you', 'are', 'they',
+                    'it', 'our', 'be', 'is', 'in', 'my', 'with', 'have', 'has', 'no', 'how', 'was', 'very',
+                    'this', 'he', 'that', 'it\'s', 'cunt', 'fuck', 'like', 'not', 'your', 'don\'t', 'she',
+                    'his', 'her', 'just', 'when', 'so', 'got', 'get', 'what', 'why', 'who', 'how', 'would',
+                    'should', 'could', 'some', 'can', 'you\'re', 'about', 'which', 'had', 'want', 'made']

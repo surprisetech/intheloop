@@ -1,8 +1,7 @@
-import string
 import matplotlib.pyplot as plt, mpld3
 from flask import Flask, send_file, json, render_template
 import praw
-from wordOps import countWords
+from wordOps import countWords, punctRm, excludeWordsList
 from config import RedditConfig
 
 # Send "public/any.name" when route "<site>.com/{any.name}" is hit
@@ -105,12 +104,3 @@ def wordCountUser(user):
 	plt.bar(range(len(labels)), values, tick_label=labels)
 
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
-
-
-punctRm = str.maketrans('', '', string.punctuation + "“”’")
-excludeWordsList = ['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'on',
-                    'at', 'to', 'from', 'by', 'we', 'of', 'as', 'do', 'up', 'if', 'i', 'you', 'are', 'they',
-                    'it', 'our', 'be', 'is', 'in', 'my', 'with', 'have', 'has', 'no', 'how', 'was', 'very',
-                    'this', 'he', 'that', 'it\'s', 'cunt', 'fuck', 'like', 'not', 'your', 'don\'t', 'she',
-                    'his', 'her', 'just', 'when', 'so', 'got', 'get', 'what', 'why', 'who', 'how', 'would',
-                    'should', 'could', 'some', 'can', 'you\'re', 'about', 'which', 'had', 'want', 'made']
