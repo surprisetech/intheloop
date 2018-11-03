@@ -1,5 +1,13 @@
 /* The optimal theme is dark theme. */
 body {
     color: darkgray;
-    background-color: #323232;
+    background-color: #141414;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart {
+    background-color: #95190c;
+    margin: 0 auto;
 }

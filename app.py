@@ -6,7 +6,7 @@ from wordOps import countWords
 from config import RedditConfig
 
 # Send "public/any.name" when route "<site>.com/{any.name}" is hit
-app = Flask(__name__, static_url_path="", static_folder="static")
+app = Flask(__name__, static_url_path="", static_folder="static", template_folder='templates')
 
 # Initialize PRAW (reddit wrapper) from config.py
 # DO NOT push config.py to github, we do not want to
@@ -25,7 +25,14 @@ reddit = praw.Reddit(client_id=RedditConfig.id,
 # Remap '/' to index. Other files can be served statically.
 @app.route('/')
 def index():
-	return send_file('templates/index.html')
+	return render_template('index.html', chart="""
+	Welcome to Seeing Redd. 
+	Please navigate to 
+	<a>/r/{subreddit-name}/hot</a>
+	or
+	<a>/u/{username}</a>
+	to see more.
+	""")
 
 def newPosts(sr):
 	return reddit.subreddit(sr).new(limit=100)
@@ -45,7 +52,8 @@ def controversalPostsAllTime(sr):
 def controversalPast24Hours(sr):
 	return reddit.subreddit(sr).controversial(time_filter = 'day', limit=100)
 
-@app.route('/count/<sr>/<category>/')
+
+@app.route('/r/<sr>/<category>/')
 def wordCountSubreddit(sr, category):
 	switch = {"new":newPosts(sr),
 			   "hot":hotPosts(sr),
@@ -57,19 +65,46 @@ def wordCountSubreddit(sr, category):
 	submissions = switch.get(category)
 	posts = list(map(lambda x: x.selftext + " " + x.title, submissions))
 	sortedWords = countWords(posts, punctRm, excludeWordsList)
+	sortedWords = sortedWords[:50]
 	labels = list()
 	values = list()
 	for word in sortedWords:
 		labels.append(word[0])
 		values.append(word[1])
-	labels = labels[:50]
-	values = values[:50]
 
 	# Generate chart.
 	fig = plt.figure()
 	plt.bar(range(len(labels)), values, tick_label=labels)
 
-	return mpld3.fig_to_html(fig)
+	return render_template('index.html', chart=mpld3.fig_to_html(fig))
+
+#word popularity by user-KT
+@app.route('/u/<user>/')
+def wordCountUser(user):
+	user = reddit.redditor(name=user)
+	comments = user.comments.hot(limit=100)
+	submissions = user.submissions.hot(limit=100)
+
+	usersText = list()
+	for comment in comments:
+		usersText.append(comment.body)
+
+	for sub in submissions:
+		usersText.append(sub.selftext)
+
+	sortedWords = countWords(usersText, punctRm, excludeWordsList)
+	sortedWords = sortedWords[:50]
+	labels = list()
+	values = list()
+	for word in sortedWords:
+		labels.append(word[0])
+		values.append(word[1])
+
+	# Generate chart.
+	fig = plt.figure()
+	plt.bar(range(len(labels)), values, tick_label=labels)
+
+	return render_template('index.html', chart=mpld3.fig_to_html(fig))
 
 
 punctRm = str.maketrans('', '', string.punctuation + "“”’")

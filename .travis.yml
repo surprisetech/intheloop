@@ -1,0 +1,9 @@
+language: python
+python:
+  - "3.6"
+install:
+  - pip install -r requirements.txt
+notifications:
+    slack: surprisetech:j8bAuVBQphzqvvpkfZ2FDSXs
+script:
+  - pytest
