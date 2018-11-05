@@ -151,12 +151,17 @@ def wordCountSubreddit(sr, category):
 	# Generate chart.
 	fig = plt.figure()
 	plt.bar(range(len(labels)), values, tick_label=labels)
+	ax1 = fig.add_subplot(111)
+	fig.subplots_adjust(top=0.85)
+	ax1.set_xlabel('Word')
+	y_rotate=ax1.set_ylabel('Instances')
+	y_rotate.set_rotation(0)
 
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
 
-#word popularity by user-KT
+#word popularity by user
 @app.route('/u/<user>/<category>')
-def wordCountUser(user):
+def wordCountUser(user, category):
 	user = reddit.redditor(name=user)
 	comments = user.comments
 	submissions = user.submissions
@@ -173,41 +178,9 @@ def wordCountUser(user):
 	# Generate chart.
 	fig = plt.figure()
 	plt.bar(range(len(labels)), values, tick_label=labels)
-
+	ax1 = fig.add_subplot(111)
+	fig.subplots_adjust(top=0.85)
+	ax1.set_xlabel('Word')
+	y_rotate=ax1.set_ylabel('Instances')
+	y_rotate.set_rotation(0)
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
-
-#descriptive labels for subreddits graph axis
-fig_Sub = plt.figure(1)
-fig_Sub.suptitle('Subreddits', fontsize=14, fontweight='bold')
-ax1 = fig_Sub.add_subplot(111)
-fig_Sub.subplots_adjust(top=0.85)
-#ax1.plot(x,y) LEAVE UNTIL READY FOR DATA
-ax1.set_title('axes title')
-ax1.set_xlabel('Word')
-y_rotate=ax1.set_ylabel('Instances')
-y_rotate.set_rotation(0)
-#is this big enough?
-ax1.axis([0, 1000, 0, 1000])
-plt.rc('xtick', color='k', labelsize='medium', direction='out')
-plt.rc('xtick.major', size=10) #size of tick, interval
-plt.rc('xtick.minor', size=10)
-#plt.show() 
-#note for later--might want fig.canvas.draw() to refresh the plot?
-
-#descriptive labels for user graph axis
-fig_user = plt.figure(2)
-fig_user.suptitle('Users', fontsize=14, fontweight='bold')
-ax2 = fig_user.add_subplot(111)
-fig_user.subplots_adjust(top=0.85)
-ax2.set_title('axes title')
-#ax2.plot(x,y) LEAVE UNTIL READY FOR DATA
-ax2.set_xlabel('Word')
-y2_rotate=ax2.set_ylabel('Instances')
-y2_rotate.set_rotation(0)
-#is this big enough?
-ax2.axis([0, 1000, 0, 1000])
-plt.rc('xtick', color='k', labelsize='medium', direction='out')
-plt.rc('xtick.major', size=10)
-plt.rc('xtick.minor', size=10)
-plt.show()
-#note for later--might want fig.canvas.draw() to refresh the plot?
