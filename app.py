@@ -189,8 +189,8 @@ y_rotate.set_rotation(0)
 #is this big enough?
 ax1.axis([0, 1000, 0, 1000])
 plt.rc('xtick', color='k', labelsize='medium', direction='out')
-plt.rc('xtick.major', size=10, pad=100) #size of tick, interval
-plt.rc('xtick.minor', size=10, pad=100)
+plt.rc('xtick.major', size=10) #size of tick, interval
+plt.rc('xtick.minor', size=10)
 #plt.show() 
 #note for later--might want fig.canvas.draw() to refresh the plot?
 
@@ -207,7 +207,7 @@ y2_rotate.set_rotation(0)
 #is this big enough?
 ax2.axis([0, 1000, 0, 1000])
 plt.rc('xtick', color='k', labelsize='medium', direction='out')
-plt.rc('xtick.major', size=0, pad=0)
-plt.rc('xtick.minor', size=0, pad=0)
+plt.rc('xtick.major', size=10)
+plt.rc('xtick.minor', size=10)
 plt.show()
 #note for later--might want fig.canvas.draw() to refresh the plot?
