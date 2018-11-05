@@ -14,7 +14,12 @@ def step_impl(context):
 @when(u'we search tifu subreddit and {category}')
 def step_impl(context,category):
     browser = context.browser
-    browser.get("http://surprisetech.pythonanywhere.com/count/tifu/" + category)
+    browser.get("http://surprisetech.pythonanywhere.com/r/tifu/" + category)
+    
+@when(u'we search nasa user and {category}')
+def step_impl(context,category):
+    browser = context.browser
+    browser.get("http://surprisetech.pythonanywhere.com/r/tifu/" + category)
     
 @then(u'we should see bar graphs')
 def step_impl(context):

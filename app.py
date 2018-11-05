@@ -1,12 +1,11 @@
-import string
-
-from Flask import Flask, send_file, json
+import matplotlib.pyplot as plt, mpld3
+from flask import Flask, send_file, json, render_template
 import praw
-from wordOps import countWords
+from wordOps import countWords, punctRm, excludeWordsList
 from config import RedditConfig
 
 # Send "public/any.name" when route "<site>.com/{any.name}" is hit
-app = Flask(__name__, static_url_path="", static_folder="public")
+app = Flask(__name__, static_url_path="", static_folder="static", template_folder='templates')
 
 # Initialize PRAW (reddit wrapper) from config.py
 # DO NOT push config.py to github, we do not want to
@@ -25,7 +24,14 @@ reddit = praw.Reddit(client_id=RedditConfig.id,
 # Remap '/' to index. Other files can be served statically.
 @app.route('/')
 def index():
-    return send_file('public/index.html')
+	return render_template('index.html', chart="""
+	Welcome to Seeing Redd. 
+	Please navigate to 
+	<a>/r/{subreddit-name}/hot</a>
+	or
+	<a>/u/{username}</a>
+	to see more.
+	""")
 
 def newPosts(sr):
 	return reddit.subreddit(sr).new(limit=100)
@@ -46,7 +52,7 @@ def controversalPast24Hours(sr):
 	return reddit.subreddit(sr).controversial(time_filter = 'day', limit=100)
 
 
-@app.route('/count/<sr>/<category>/')
+@app.route('/r/<sr>/<category>/')
 def wordCountSubreddit(sr, category):
 	switch = {"new":newPosts(sr),
 			   "hot":hotPosts(sr),
@@ -58,20 +64,43 @@ def wordCountSubreddit(sr, category):
 	submissions = switch.get(category)
 	posts = list(map(lambda x: x.selftext + " " + x.title, submissions))
 	sortedWords = countWords(posts, punctRm, excludeWordsList)
-	return json.jsonify(sortedWords)
+	sortedWords = sortedWords[:50]
+	labels = list()
+	values = list()
+	for word in sortedWords:
+		labels.append(word[0])
+		values.append(word[1])
+
+	# Generate chart.
+	fig = plt.figure()
+	plt.bar(range(len(labels)), values, tick_label=labels)
+
+	return render_template('index.html', chart=mpld3.fig_to_html(fig))
 
 #word popularity by user-KT
-@app.route('/count/<user>/')
+@app.route('/u/<user>/')
 def wordCountUser(user):
-	userOutput #need to define this
-	user = list(map(lambda x: x.name + " " + x.word, userOutput ))
-	return json.jsonify(user)
+	user = reddit.redditor(name=user)
+	comments = user.comments.hot(limit=100)
+	submissions = user.submissions.hot(limit=100)
 
+	usersText = list()
+	for comment in comments:
+		usersText.append(comment.body)
 
-punctRm = str.maketrans('', '', string.punctuation + "“”’")
-excludeWordsList = ['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'on',
-                    'at', 'to', 'from', 'by', 'we', 'of', 'as', 'do', 'up', 'if', 'i', 'you', 'are', 'they',
-                    'it', 'our', 'be', 'is', 'in', 'my', 'with', 'have', 'has', 'no', 'how', 'was', 'very',
-                    'this', 'he', 'that', 'it\'s', 'cunt', 'fuck', 'like', 'not', 'your', 'don\'t', 'she',
-                    'his', 'her', 'just', 'when', 'so', 'got', 'get', 'what', 'why', 'who', 'how', 'would',
-                    'should', 'could', 'some', 'can', 'you\'re', 'about', 'which', 'had', 'want', 'made']
+	for sub in submissions:
+		usersText.append(sub.selftext)
+
+	sortedWords = countWords(usersText, punctRm, excludeWordsList)
+	sortedWords = sortedWords[:50]
+	labels = list()
+	values = list()
+	for word in sortedWords:
+		labels.append(word[0])
+		values.append(word[1])
+
+	# Generate chart.
+	fig = plt.figure()
+	plt.bar(range(len(labels)), values, tick_label=labels)
+
+	return render_template('index.html', chart=mpld3.fig_to_html(fig))
