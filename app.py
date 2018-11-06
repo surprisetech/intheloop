@@ -1,3 +1,5 @@
+import string
+from wordcloud import WordCloud
 import matplotlib.pyplot as plt, mpld3
 from flask import Flask, send_file, json, render_template
 import praw
@@ -152,6 +154,14 @@ def wordCountSubreddit(sr, category):
 	fig = plt.figure()
 	plt.bar(range(len(labels)), values, tick_label=labels)
 
+	#Generate Word Cloud
+	text = str(sortedWords)
+	wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
+	plt.imshow(wordcloud, interpolation='bilinear')
+	plt.axis("off")
+	plt.margins(x=0, y=0)
+	#plt.show()
+
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
 
 #word popularity by user-KT
@@ -173,5 +183,13 @@ def wordCountUser(user):
 	# Generate chart.
 	fig = plt.figure()
 	plt.bar(range(len(labels)), values, tick_label=labels)
+
+	#Generate Word Cloud
+	text = str(sortedWords)
+	wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
+	plt.imshow(wordcloud, interpolation='bilinear')
+	plt.axis("off")
+	plt.margins(x=0, y=0)
+	#plt.show()
 
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
