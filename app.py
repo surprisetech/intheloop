@@ -41,7 +41,7 @@ def newPosts(searchbase):
 def hotPosts(searchbase):
 	return searchbase.hot(limit=100)
 
-def topPostsAllTime(searchbase, searchbase2 = None):
+def topPostsAllTime(searchbase):
 	return searchbase.top(time_filter='all', limit=100)
 	
 def topPostsPast24Hours(searchbase, searchbase2 = None):
