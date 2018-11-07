@@ -1,9 +1,5 @@
 import praw
-
-class RedditConfig:
-    id = '3iaAttC7v0D96Q'
-    secret = 'Dm-EfQSVyl8skVenes3DH25QfkY'
-    userAgent = 'userAgent'
+from config import RedditConfig
 
 reddit = praw.Reddit(client_id=RedditConfig.id,
                      client_secret=RedditConfig.secret,
