@@ -1,8 +1,9 @@
 import string
+from wordcloud import WordCloud
 import matplotlib.pyplot as plt, mpld3
 from flask import Flask, send_file, json, render_template
 import praw
-from wordOps import countWords
+from wordOps import countWords, punctRm, excludeWordsList
 from config import RedditConfig
 
 # Send "public/any.name" when route "<site>.com/{any.name}" is hit
@@ -83,10 +84,23 @@ def wordCountSubreddit(sr, category):
 	# Generate chart.
 	fig = plt.figure()
 	plt.bar(range(len(labels)), values, tick_label=labels)
+	ax1 = fig.add_subplot(111)
+	fig.subplots_adjust(top=0.85)
+	ax1.set_xlabel('Word')
+	y_rotate=ax1.set_ylabel('Instances')
+	y_rotate.set_rotation(0)
+
+	#Generate Word Cloud
+	text = str(sortedWords)
+	wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
+	plt.imshow(wordcloud, interpolation='bilinear')
+	plt.axis("off")
+	plt.margins(x=0, y=0)
+	#plt.show()
 
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
 
-#word popularity by user-KT
+#word popularity by user
 @app.route('/u/<user>/<category>')
 def wordCountUser(user, category):
 	user = reddit.redditor(name=user)
@@ -112,13 +126,17 @@ def wordCountUser(user, category):
 	fig = plt.figure()
 	plt.bar(range(len(labels)), values, tick_label=labels)
 
+  ax1 = fig.add_subplot(111)
+	fig.subplots_adjust(top=0.85)
+	ax1.set_xlabel('Word')
+	y_rotate=ax1.set_ylabel('Instances')
+	y_rotate.set_rotation(0)
+
+	#Generate Word Cloud
+	text = str(sortedWords)
+	wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
+	plt.imshow(wordcloud, interpolation='bilinear')
+	plt.axis("off")
+	plt.margins(x=0, y=0)
+	#plt.show()
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
-
-
-punctRm = str.maketrans('', '', string.punctuation + "“”’")
-excludeWordsList = ['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'on',
-                    'at', 'to', 'from', 'by', 'we', 'of', 'as', 'do', 'up', 'if', 'i', 'you', 'are', 'they',
-                    'it', 'our', 'be', 'is', 'in', 'my', 'with', 'have', 'has', 'no', 'how', 'was', 'very',
-                    'this', 'he', 'that', 'it\'s', 'cunt', 'fuck', 'like', 'not', 'your', 'don\'t', 'she',
-                    'his', 'her', 'just', 'when', 'so', 'got', 'get', 'what', 'why', 'who', 'how', 'would',
-                    'should', 'could', 'some', 'can', 'you\'re', 'about', 'which', 'had', 'want', 'made']
