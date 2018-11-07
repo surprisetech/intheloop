@@ -1,8 +1,9 @@
 import string
+from wordcloud import WordCloud
 import matplotlib.pyplot as plt, mpld3
 from flask import Flask, send_file, json, render_template
 import praw
-from wordOps import countWords
+from wordOps import countWords, punctRm, excludeWordsList
 from config import RedditConfig
 
 # Send "public/any.name" when route "<site>.com/{any.name}" is hit
@@ -34,35 +35,37 @@ def index():
 	to see more.
 	""")
 
-def newPosts(sr):
-	return reddit.subreddit(sr).new(limit=100)
+def newPosts(searchbase):
+	return searchbase.new(limit=100)
 
-def hotPosts(sr):
-	return reddit.subreddit(sr).hot(limit=100)
+def hotPosts(searchbase):
+	return searchbase.hot(limit=100)
 
-def topPostsAllTime(sr):
-	return reddit.subreddit(sr).top(time_filter='all', limit=100)
+def topPostsAllTime(searchbase):
+	return searchbase.top(time_filter='all', limit=100)
 	
-def topPostsPast24Hours(sr):
-	return reddit.subreddit(sr).top(time_filter='day', limit=100)	
+def topPostsPast24Hours(searchbase):
+	return searchbase.top(time_filter='day', limit=100)
 
-def controversalPostsAllTime(sr):
-	return reddit.subreddit(sr).controversial(time_filter = 'all', limit=100)
+def controversalPostsAllTime(searchbase):
+	return searchbase.controversial(time_filter='all', limit=100)
 	
-def controversalPast24Hours(sr):
-	return reddit.subreddit(sr).controversial(time_filter = 'day', limit=100)
+def controversalPast24Hours(searchbase):
+	return searchbase.controversial(time_filter='day', limit=100)
 
+switch = {"new": lambda x: newPosts(x),
+		  "hot": lambda x: hotPosts(x),
+		  "topalltime": lambda x: topPostsAllTime(x),
+		  "top24hrs": lambda x: topPostsPast24Hours(x),
+		  "controversalall": lambda x: controversalPast24Hours(x),
+		  "controversal24hrs": lambda x: controversalPast24Hours(x),
+}
 
 @app.route('/r/<sr>/<category>/')
 def wordCountSubreddit(sr, category):
-	switch = {"new":newPosts(sr),
-			   "hot":hotPosts(sr),
-			   "topalltime":topPostsAllTime(sr),
-			   "top24hrs":topPostsPast24Hours(sr),
-			   "controversalall":controversalPast24Hours(sr),
-			   "controversal24hrs":controversalPast24Hours(sr),
-	}
-	submissions = switch.get(category)
+	funct = switch.get(category)
+	subreddit = reddit.subreddit(sr)
+	submissions = funct(subreddit)
 	posts = list(map(lambda x: x.selftext + " " + x.title, submissions))
 	sortedWords = countWords(posts, punctRm, excludeWordsList)
 	sortedWords = sortedWords[:50]
@@ -75,23 +78,36 @@ def wordCountSubreddit(sr, category):
 	# Generate chart.
 	fig = plt.figure()
 	plt.bar(range(len(labels)), values, tick_label=labels)
+	ax1 = fig.add_subplot(111)
+	fig.subplots_adjust(top=0.85)
+	ax1.set_xlabel('Word')
+	y_rotate=ax1.set_ylabel('Instances')
+	y_rotate.set_rotation(0)
+
+	#Generate Word Cloud
+	text = str(sortedWords)
+	wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
+	plt.imshow(wordcloud, interpolation='bilinear')
+	plt.axis("off")
+	plt.margins(x=0, y=0)
+	#plt.show()
 
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
 
-#word popularity by user-KT
-@app.route('/u/<user>/')
-def wordCountUser(user):
+#word popularity by user
+@app.route('/u/<user>/<category>')
+def wordCountUser(user, category):
 	user = reddit.redditor(name=user)
-	comments = user.comments.hot(limit=100)
-	submissions = user.submissions.hot(limit=100)
-
+	comments = user.comments
+	submissions = user.submissions
+	funct = switch.get(category)
+	commentWords = funct(comments)
+	submissionWords = funct(submissions)
 	usersText = list()
-	for comment in comments:
+	for comment in commentWords:
 		usersText.append(comment.body)
-
-	for sub in submissions:
+	for sub in submissionWords:
 		usersText.append(sub.selftext)
-
 	sortedWords = countWords(usersText, punctRm, excludeWordsList)
 	sortedWords = sortedWords[:50]
 	labels = list()
@@ -104,13 +120,17 @@ def wordCountUser(user):
 	fig = plt.figure()
 	plt.bar(range(len(labels)), values, tick_label=labels)
 
+	ax1 = fig.add_subplot(111)
+	fig.subplots_adjust(top=0.85)
+	ax1.set_xlabel('Word')
+	y_rotate=ax1.set_ylabel('Instances')
+	y_rotate.set_rotation(0)
+
+	#Generate Word Cloud
+	text = str(sortedWords)
+	wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
+	plt.imshow(wordcloud, interpolation='bilinear')
+	plt.axis("off")
+	plt.margins(x=0, y=0)
+	#plt.show()
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
-
-
-punctRm = str.maketrans('', '', string.punctuation + "“”’")
-excludeWordsList = ['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'on',
-                    'at', 'to', 'from', 'by', 'we', 'of', 'as', 'do', 'up', 'if', 'i', 'you', 'are', 'they',
-                    'it', 'our', 'be', 'is', 'in', 'my', 'with', 'have', 'has', 'no', 'how', 'was', 'very',
-                    'this', 'he', 'that', 'it\'s', 'cunt', 'fuck', 'like', 'not', 'your', 'don\'t', 'she',
-                    'his', 'her', 'just', 'when', 'so', 'got', 'get', 'what', 'why', 'who', 'how', 'would',
-                    'should', 'could', 'some', 'can', 'you\'re', 'about', 'which', 'had', 'want', 'made']
