@@ -38,7 +38,7 @@ def index():
 def newPosts(searchbase):
 	return searchbase.new(limit=100)
 
-def hotPosts(searchbase, searchbase2 = None):
+def hotPosts(searchbase):
 	return searchbase.hot(limit=100)
 
 def topPostsAllTime(searchbase, searchbase2 = None):
