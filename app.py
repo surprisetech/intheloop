@@ -44,7 +44,7 @@ def hotPosts(searchbase):
 def topPostsAllTime(searchbase):
 	return searchbase.top(time_filter='all', limit=100)
 	
-def topPostsPast24Hours(searchbase, searchbase2 = None):
+def topPostsPast24Hours(searchbase):
 	return searchbase.top(time_filter='day', limit=100)
 
 def controversalPostsAllTime(searchbase, searchbase2 = None):
