@@ -35,7 +35,7 @@ def index():
 	to see more.
 	""")
 
-def newPosts(searchbase, searchbase2 = None):
+def newPosts(searchbase):
 	return searchbase.new(limit=100)
 
 def hotPosts(searchbase, searchbase2 = None):
