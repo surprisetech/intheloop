@@ -50,7 +50,7 @@ def topPostsPast24Hours(searchbase):
 def controversalPostsAllTime(searchbase):
 	return searchbase.controversial(time_filter='all', limit=100)
 	
-def controversalPast24Hours(searchbase, searchbase2 = None):
+def controversalPast24Hours(searchbase):
 	return searchbase.controversial(time_filter='day', limit=100)
 
 switch = {"new": lambda x: newPosts(x),
