@@ -35,28 +35,22 @@ def index():
 	to see more.
 	""")
 
-def newPosts(searchbase, searchbase2 = None):
-	print("newPosts")
+def newPosts(searchbase):
 	return searchbase.new(limit=100)
 
-def hotPosts(searchbase, searchbase2 = None):
-	print("hotPosts")
+def hotPosts(searchbase):
 	return searchbase.hot(limit=100)
 
-def topPostsAllTime(searchbase, searchbase2 = None):
-	print("topPostsAllTime")
+def topPostsAllTime(searchbase):
 	return searchbase.top(time_filter='all', limit=100)
 	
-def topPostsPast24Hours(searchbase, searchbase2 = None):
-	print("topPostsPast24Hours")
+def topPostsPast24Hours(searchbase):
 	return searchbase.top(time_filter='day', limit=100)
 
-def controversalPostsAllTime(searchbase, searchbase2 = None):
-	print("controversalPostsAllTime")
+def controversalPostsAllTime(searchbase):
 	return searchbase.controversial(time_filter='all', limit=100)
 	
-def controversalPast24Hours(searchbase, searchbase2 = None):
-	print("controversalPast24Hours")
+def controversalPast24Hours(searchbase):
 	return searchbase.controversial(time_filter='day', limit=100)
 
 switch = {"new": lambda x: newPosts(x),
