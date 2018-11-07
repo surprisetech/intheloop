@@ -153,6 +153,11 @@ def wordCountSubreddit(sr, category):
 	# Generate chart.
 	fig = plt.figure()
 	plt.bar(range(len(labels)), values, tick_label=labels)
+	ax1 = fig.add_subplot(111)
+	fig.subplots_adjust(top=0.85)
+	ax1.set_xlabel('Word')
+	y_rotate=ax1.set_ylabel('Instances')
+	y_rotate.set_rotation(0)
 
 	#Generate Word Cloud
 	text = str(sortedWords)
@@ -164,9 +169,9 @@ def wordCountSubreddit(sr, category):
 
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
 
-#word popularity by user-KT
+#word popularity by user
 @app.route('/u/<user>/<category>')
-def wordCountUser(user):
+def wordCountUser(user, category):
 	user = reddit.redditor(name=user)
 	comments = user.comments
 	submissions = user.submissions
@@ -184,6 +189,12 @@ def wordCountUser(user):
 	fig = plt.figure()
 	plt.bar(range(len(labels)), values, tick_label=labels)
 
+  ax1 = fig.add_subplot(111)
+	fig.subplots_adjust(top=0.85)
+	ax1.set_xlabel('Word')
+	y_rotate=ax1.set_ylabel('Instances')
+	y_rotate.set_rotation(0)
+
 	#Generate Word Cloud
 	text = str(sortedWords)
 	wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
@@ -191,5 +202,4 @@ def wordCountUser(user):
 	plt.axis("off")
 	plt.margins(x=0, y=0)
 	#plt.show()
-
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
