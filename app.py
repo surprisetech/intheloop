@@ -36,103 +36,34 @@ def index():
 
 def newPosts(searchbase, searchbase2 = None):
 	print("newPosts")
-	if(searchbase2 is not None):
-			comments = searchbase.new(limit=100)
-			submissions = searchbase2.new(limit=100)
-			usersText = list()
-			for comment in comments:
-				usersText.append(comment.body)
-
-			for sub in submissions:
-				usersText.append(sub.selftext)
-			return usersText
-	else:
-		return searchbase.new(limit=100)
+	return searchbase.new(limit=100)
 
 def hotPosts(searchbase, searchbase2 = None):
 	print("hotPosts")
-	if(searchbase2 is not None):
-			comments = searchbase.hot(limit=100)
-			submissions = searchbase2.hot(limit=100)
-			usersText = list()
-			for comment in comments:
-				usersText.append(comment.body)
-
-			for sub in submissions:
-				usersText.append(sub.selftext)
-			return usersText
-	else:
-		return searchbase.hot(limit=100)
+	return searchbase.hot(limit=100)
 
 def topPostsAllTime(searchbase, searchbase2 = None):
 	print("topPostsAllTime")
-	if(searchbase2 is not None):
-			comments = searchbase.top(time_filter='all', limit=100)
-			submissions = searchbase2.top(time_filter='all', limit=100)
-			usersText = list()
-			for comment in comments:
-				usersText.append(comment.body)
-
-			for sub in submissions:
-				usersText.append(sub.selftext)
-			return usersText
-	else:
-		return searchbase.new(time_filter='all', limit=100)
+	return searchbase.top(time_filter='all', limit=100)
 	
 def topPostsPast24Hours(searchbase, searchbase2 = None):
 	print("topPostsPast24Hours")
-	if(searchbase2 is not None):
-			comments = searchbase.top(time_filter='day', limit=100)
-			submissions = searchbase2.top(time_filter='day', limit=100)
-			usersText = list()
-			for comment in comments:
-				usersText.append(comment.body)
-
-			for sub in submissions:
-				usersText.append(sub.selftext)
-			return usersText
-	else:
-		return searchbase.new(time_filter='day', limit=100)
+	return searchbase.top(time_filter='day', limit=100)
 
 def controversalPostsAllTime(searchbase, searchbase2 = None):
 	print("controversalPostsAllTime")
-	if(searchbase2 is not None):
-			comments = searchbase.controversalall(time_filter='all', limit=100)
-			submissions = searchbase2.controversalall(time_filter='all', limit=100)
-			usersText = list()
-			for comment in comments:
-				usersText.append(comment.body)
-
-			for sub in submissions:
-				usersText.append(sub.selftext)
-			return usersText
-	else:
-		return searchbase.controversial(time_filter='all', limit=100)
+	return searchbase.controversial(time_filter='all', limit=100)
 	
 def controversalPast24Hours(searchbase, searchbase2 = None):
 	print("controversalPast24Hours")
-	if(searchbase2 is not None):
-			comments = searchbase.controversalall(time_filter='day', limit=100)
-			submissions = searchbase2.controversalall(time_filter='day', limit=100)
-			usersText = list()
-			for comment in comments:
-				usersText.append(comment.body)
+	return searchbase.controversial(time_filter='day', limit=100)
 
-			for sub in submissions:
-				usersText.append(sub.selftext)
-			return usersText
-	else:
-		return searchbase.controversial(time_filter='day', limit=100)
-
-def creepOnUser(user):
-	return
-
-switch = {"new": lambda x,y=None: newPosts(x,y),
-		  "hot": lambda x,y=None: hotPosts(x,y),
-		  "topalltime": lambda x,y=None: topPostsAllTime(x,y),
-		  "top24hrs": lambda x,y=None: topPostsPast24Hours(x,y),
-		  "controversalall": lambda x,y=None: controversalPast24Hours(x,y),
-		  "controversal24hrs": lambda x,y=None: controversalPast24Hours(x,y),
+switch = {"new": lambda x: newPosts(x),
+		  "hot": lambda x: hotPosts(x),
+		  "topalltime": lambda x: topPostsAllTime(x),
+		  "top24hrs": lambda x: topPostsPast24Hours(x),
+		  "controversalall": lambda x: controversalPast24Hours(x),
+		  "controversal24hrs": lambda x: controversalPast24Hours(x),
 }
 
 @app.route('/r/<sr>/<category>/')
@@ -157,12 +88,18 @@ def wordCountSubreddit(sr, category):
 
 #word popularity by user-KT
 @app.route('/u/<user>/<category>')
-def wordCountUser(user):
+def wordCountUser(user, category):
 	user = reddit.redditor(name=user)
 	comments = user.comments
 	submissions = user.submissions
 	funct = switch.get(category)
-	usersText = funct(comments, submissions)
+	commentWords = funct(comments)
+	submissionWords = funct(submissions)
+	usersText = list()
+	for comment in commentWords:
+		usersText.append(comment.body)
+	for sub in submissionWords:
+		usersText.append(sub.selftext)
 	sortedWords = countWords(usersText, punctRm, excludeWordsList)
 	sortedWords = sortedWords[:50]
 	labels = list()
