@@ -1,4 +1,8 @@
 /* The optimal theme is dark theme. */
+head {
+    background-color: #95190c;
+}
+
 body {
     color: darkgray;
     background-color: #141414;

@@ -1,8 +1,34 @@
 <html>
     <head>
         <link rel="stylesheet" href="/style.css" />
+        <script>
+            function EnableDrop() { document.getElementById("Category").disabled=false; }
+            function DisableDrop() { document.getElementById("Category").disabled=true; }
+        </script>
     </head>
     <body>
+        <div class="head" style="position:fixed;top:0;left:0;padding:20px">
+            <form id="redditSearch">
+            <!-- action="app.py?" method="get" onsubmit="script func?" -->
+            <!-- search with the values from radio + q text + select option -->
+                <label>Search Seeing Redd:</label><br>
+                <label for="r">/r</label>
+                    <input type="radio" name="page" id="r" value="subreddit" onclick="EnableDrop();">
+                <label for="u">/u</label>
+                    <input type="radio" name="page" id="u" value="user" onclick="DisableDrop();">
+                <input type="search" name="q">
+                <select id="Category" form="redditSearch">
+                    <option value="new">New</option>
+                    <option value="hot">Hot</option>
+                    <option value="topAll">Top All</option>
+                    <option value="top24">Top 24</option>
+                    <option value="contAll">Controversial All</option>
+                    <option value="cont24">Controversial 24</option>
+                </select><br>
+                <input type="submit">
+            </form>
+        </div>
+
         <div class="chart">{{ chart | safe }}</div>
         <!-- <div class="cloud">{{ cloud | safe }}</div> -->
     </body>
