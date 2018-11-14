@@ -6,7 +6,8 @@
             function DisableDrop() { document.getElementById("onlyR").disabled=true; }
             function doSearch() {
                 var type = "";
-                var domain = "http://surprisetech.pythonanywhere.com/"; //change pythonanywhere to localhost for deployment
+                var domain = "http://surprisetech.pythonanywhere.com/";
+                //var domain = "http://localhost:5000/"; //use this one for local testing
                 var button1 = document.getElementById("r");
                 var button2 = document.getElementById("u");
                 if (button1.checked) {
