@@ -1,8 +1,52 @@
 <html>
     <head>
         <link rel="stylesheet" href="/style.css" />
+        <script>
+            function EnableDrop() { document.getElementById("onlyR").disabled=false; }
+            function DisableDrop() { document.getElementById("onlyR").disabled=true; }
+            function doSearch() {
+                var type = "";
+                var domain = "http://localhost:5000/"; //change localhost to pythonanywhere for deployment
+                var button1 = document.getElementById("r");
+                var button2 = document.getElementById("u");
+                var test = document.getElementById("category")
+                if (button1.checked) {
+                    type = "r/";
+                } else if (button2.checked) {
+                    type = "u/";
+                }
+                var url = domain.valueOf() + type.valueOf() + document.getElementById("url").value + "/" + document.getElementById("category").value;
+                location.href = url;
+                return false;
+                }
+        </script>
     </head>
     <body>
+        <div class="head" style="position:fixed;top:0;left:0;padding:20px">
+            <form id="redditSearch" onsubmit="return doSearch();">
+                <label>Search Seeing Redd:</label><br>
+                <label for="r">/r</label>
+                    <input type="radio" name="page" id="r" value="subreddit" onclick="EnableDrop();">
+                <label for="u">/u</label>
+                    <input type="radio" name="page" id="u" value="user" onclick="DisableDrop();">
+                <input type="search" name="url" id="url">
+                <select id="category" form="redditSearch">
+                    <optgroup id="RorU" label="R or U">
+                        <option value="new">New</option>
+                        <option value="hot">Hot</option>
+                        <option value="topalltime">Top All</option>
+                        <option value="top24hrs">Top 24</option>
+                    </optgroup>
+                    <optgroup id="onlyR" label="only R">
+                        <option value="controversalall">Controversial All</option>
+                        <option value="controversal24hrs">Controversial 24</option>
+                    </optgroup>
+                    <!-- maintain the spelling on contro unless its fixed elsewhere -->
+                </select><br>
+                <input type="submit" value="submit">
+            </form>
+        </div>
+
         <div class="chart">{{ chart | safe }}</div>
         <!-- <div class="cloud">{{ cloud | safe }}</div> -->
     </body>
