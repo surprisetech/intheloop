@@ -6,10 +6,9 @@
             function DisableDrop() { document.getElementById("onlyR").disabled=true; }
             function doSearch() {
                 var type = "";
-                var domain = "http://localhost:5000/"; //change localhost to pythonanywhere for deployment
+                var domain = "http://surprisetech.pythonanywhere.com/"; //change pythonanywhere to localhost for deployment
                 var button1 = document.getElementById("r");
                 var button2 = document.getElementById("u");
-                var test = document.getElementById("category")
                 if (button1.checked) {
                     type = "r/";
                 } else if (button2.checked) {
@@ -18,7 +17,7 @@
                 var url = domain.valueOf() + type.valueOf() + document.getElementById("url").value + "/" + document.getElementById("category").value;
                 location.href = url;
                 return false;
-                }
+            }
         </script>
     </head>
     <body>
