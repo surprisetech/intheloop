@@ -6,8 +6,7 @@
             function DisableDrop() { document.getElementById("onlyR").disabled=true; }
             function doSearch() {
                 var type = "";
-                var domain = "http://surprisetech.pythonanywhere.com/";
-                //var domain = "http://localhost:5000/"; //use this one for local testing
+                var domain = window.location.protocol + "//" + window.location.host + "/";
                 var button1 = document.getElementById("r");
                 var button2 = document.getElementById("u");
                 if (button1.checked) {
@@ -15,9 +14,8 @@
                 } else if (button2.checked) {
                     type = "u/";
                 }
-                //change domain to window.location.host later
-                var url = domain.valueOf() + type.valueOf() + document.getElementById("url").value + "/" + document.getElementById("category").value;
-                location = url;
+                var url = domain.valueOf() + type.valueOf() + document.getElementById("q").value + "/" + document.getElementById("category").value;
+                location.href = url;
                 return false;
             }
         </script>
@@ -30,7 +28,7 @@
                     <input type="radio" name="page" id="r" value="subreddit" onclick="EnableDrop();">
                 <label for="u">/u</label>
                     <input type="radio" name="page" id="u" value="user" onclick="DisableDrop();">
-                <input type="search" name="url" id="url">
+                <input type="search" name="url" id="q">
                 <select id="category" form="redditSearch">
                     <optgroup id="RorU" label="R or U">
                         <option value="new">New</option>
