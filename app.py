@@ -121,6 +121,7 @@ def wordCountUser(user, category):
 
 	# Generate chart.
 	fig = plt.figure()
+	plt.subplot(1, 2, 1)
 	plt.bar(range(len(labels)), values, tick_label=labels)
 	ax1 = fig.add_subplot(111)
 	fig.subplots_adjust(top=0.85)
@@ -129,6 +130,7 @@ def wordCountUser(user, category):
 	y_rotate.set_rotation(0)
 
 	# Generate Word Cloud
+	plt.subplot(1, 2, 2)
 	text = str(sortedWords)
 	text = text.replace("'", "")
 	wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
