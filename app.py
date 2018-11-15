@@ -76,23 +76,23 @@ def wordCountSubreddit(sr, category):
 		values.append(word[1])
 
 	# Generate chart.
-	fig = plt.figure() #(1)
+	fig = plt.figure()
+	plt.subplot(1, 2, 1)
 	plt.bar(range(len(labels)), values, tick_label=labels)
 	ax1 = fig.add_subplot(111)
 	fig.subplots_adjust(top=0.85)
 	ax1.set_xlabel('Word')
 	y_rotate=ax1.set_ylabel('Instances')
 	y_rotate.set_rotation(0)
-	#fig.show()
 
 	# Generate Word Cloud
-	#fig2 = plt.figure(2)
+	plt.subplot(1, 2, 2)
 	text = str(sortedWords)
+	text = text.replace("'", "")
 	wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
 	plt.imshow(wordcloud, interpolation='bilinear')
 	plt.axis("off")
 	plt.margins(x=0, y=0)
-	#fig2.show()
 	#plt.show()
 
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
@@ -130,6 +130,7 @@ def wordCountUser(user, category):
 
 	# Generate Word Cloud
 	text = str(sortedWords)
+	text = text.replace("'", "")
 	wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
 	plt.imshow(wordcloud, interpolation='bilinear')
 	plt.axis("off")
