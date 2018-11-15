@@ -15,9 +15,9 @@
                 } else if (button2.checked) {
                     type = "u/";
                 }
-                //console.log.window.location.hostname
+                //change domain to window.location.host later
                 var url = domain.valueOf() + type.valueOf() + document.getElementById("url").value + "/" + document.getElementById("category").value;
-                location.href = url;
+                location = url;
                 return false;
             }
         </script>
