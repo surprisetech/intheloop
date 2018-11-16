@@ -47,18 +47,18 @@ def topPostsAllTime(searchbase):
 def topPostsPast24Hours(searchbase):
 	return searchbase.top(time_filter='day', limit=100)
 
-def controversalPostsAllTime(searchbase):
+def controversialPostsAllTime(searchbase):
 	return searchbase.controversial(time_filter='all', limit=100)
 	
-def controversalPast24Hours(searchbase):
+def controversialPast24Hours(searchbase):
 	return searchbase.controversial(time_filter='day', limit=100)
 
 switch = {"new": lambda x: newPosts(x),
 		  "hot": lambda x: hotPosts(x),
 		  "topalltime": lambda x: topPostsAllTime(x),
 		  "top24hrs": lambda x: topPostsPast24Hours(x),
-		  "controversalall": lambda x: controversalPast24Hours(x),
-		  "controversal24hrs": lambda x: controversalPast24Hours(x),
+		  "controversialall": lambda x: controversialPast24Hours(x),
+		  "controversial24hrs": lambda x: controversialPast24Hours(x),
 }
 
 @app.route('/r/<sr>/<category>/')
@@ -75,25 +75,27 @@ def wordCountSubreddit(sr, category):
 		labels.append(word[0])
 		values.append(word[1])
 
-	# Generate chart.
 	fig = plt.figure()
-	plt.subplot(1, 2, 1)
-	plt.bar(range(len(labels)), values, tick_label=labels)
-	ax1 = fig.add_subplot(111)
-	fig.subplots_adjust(top=0.85)
-	ax1.set_xlabel('Word')
-	y_rotate=ax1.set_ylabel('Instances')
-	y_rotate.set_rotation(0)
-
+	if sortedWords:
+	# Generate Chart
+		plt.subplot(1, 2, 1)
+		plt.bar(range(len(labels)), values, tick_label=labels)
+		ax1 = fig.add_subplot(111)
+		fig.subplots_adjust(top=0.85)
+		ax1.set_xlabel('Word')
+		y_rotate=ax1.set_ylabel('Instances')
+		y_rotate.set_rotation(0)
 	# Generate Word Cloud
-	plt.subplot(1, 2, 2)
-	text = str(sortedWords)
-	text = text.replace("'", "")
-	wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
-	plt.imshow(wordcloud, interpolation='bilinear')
-	plt.axis("off")
-	plt.margins(x=0, y=0)
-	#plt.show()
+		plt.subplot(1, 2, 2)
+		text = str(sortedWords)
+		text = text.replace("'", "")
+		wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
+		plt.imshow(wordcloud, interpolation='bilinear')
+		plt.axis("off")
+		plt.margins(x=0, y=0)
+	else:
+		plt.text(0.5,0.5,'stuff')
+		#placeholder until we have a useful empty result page
 
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
 
@@ -118,25 +120,27 @@ def wordCountUser(user, category):
 	for word in sortedWords:
 		labels.append(word[0])
 		values.append(word[1])
-
-	# Generate chart.
+	
 	fig = plt.figure()
-	plt.subplot(1, 2, 1)
-	plt.bar(range(len(labels)), values, tick_label=labels)
-	ax1 = fig.add_subplot(111)
-	fig.subplots_adjust(top=0.85)
-	ax1.set_xlabel('Word')
-	y_rotate=ax1.set_ylabel('Instances')
-	y_rotate.set_rotation(0)
-
+	if sortedWords:
+	# Generate Chart
+		plt.subplot(1, 2, 1)
+		plt.bar(range(len(labels)), values, tick_label=labels)
+		ax1 = fig.add_subplot(111)
+		fig.subplots_adjust(top=0.85)
+		ax1.set_xlabel('Word')
+		y_rotate=ax1.set_ylabel('Instances')
+		y_rotate.set_rotation(0)
 	# Generate Word Cloud
-	plt.subplot(1, 2, 2)
-	text = str(sortedWords)
-	text = text.replace("'", "")
-	wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
-	plt.imshow(wordcloud, interpolation='bilinear')
-	plt.axis("off")
-	plt.margins(x=0, y=0)
-	#plt.show()
+		plt.subplot(1, 2, 2)
+		text = str(sortedWords)
+		text = text.replace("'", "")
+		wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
+		plt.imshow(wordcloud, interpolation='bilinear')
+		plt.axis("off")
+		plt.margins(x=0, y=0)
+	else:
+		plt.text(0.5,0.5,'stuff')
+		#placeholder until we have a useful empty result page
 
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
