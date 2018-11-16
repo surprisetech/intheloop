@@ -61,7 +61,17 @@ switch = {"new": lambda x: newPosts(x),
 		  "controversal24hrs": lambda x: controversalPast24Hours(x),
 }
 
-@app.route('/r/<sr>/<category>/')
+@app.route('/r/<sr>/contributors/<category>')
+def contributorsToSubreddit(sr, category):
+	funct = switch.get(category)
+	subreddit = reddit.subreddit(sr)
+	submissions = funct(subreddit)
+	contributers = filter(lambda x: x != None, [x.author for x in submissions])
+	return render_template('index.html', data=contributers)
+
+	
+
+@app.route('/r/<sr>/<category>')
 def wordCountSubreddit(sr, category):
 	funct = switch.get(category)
 	subreddit = reddit.subreddit(sr)
