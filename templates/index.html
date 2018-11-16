@@ -46,6 +46,9 @@
         </div>
 
         <div class="chart">{{ chart | safe }}</div>
+        {% for item in data %}
+            {{ item }}<br/>
+        {% endfor %}
         <!-- <div class="cloud">{{ cloud | safe }}</div> -->
     </body>
 </html>
