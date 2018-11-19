@@ -189,7 +189,7 @@ def wordCountUser(user, category):
 	fig = plt.figure()
 	plt.bar(range(len(labels)), values, tick_label=labels)
 
-  ax1 = fig.add_subplot(111)
+	ax1 = fig.add_subplot(111)
 	fig.subplots_adjust(top=0.85)
 	ax1.set_xlabel('Word')
 	y_rotate=ax1.set_ylabel('Instances')
