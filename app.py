@@ -35,108 +35,43 @@ def index():
 	to see more.
 	""")
 
-def newPosts(searchbase, searchbase2 = None):
-	print("newPosts")
-	if(searchbase2 is not None):
-			comments = searchbase.new(limit=100)
-			submissions = searchbase2.new(limit=100)
-			usersText = list()
-			for comment in comments:
-				usersText.append(comment.body)
+def newPosts(searchbase):
+	return searchbase.new(limit=100)
 
-			for sub in submissions:
-				usersText.append(sub.selftext)
-			return usersText
-	else:
-		return searchbase.new(limit=100)
+def hotPosts(searchbase):
+	return searchbase.hot(limit=100)
 
-def hotPosts(searchbase, searchbase2 = None):
-	print("hotPosts")
-	if(searchbase2 is not None):
-			comments = searchbase.hot(limit=100)
-			submissions = searchbase2.hot(limit=100)
-			usersText = list()
-			for comment in comments:
-				usersText.append(comment.body)
-
-			for sub in submissions:
-				usersText.append(sub.selftext)
-			return usersText
-	else:
-		return searchbase.hot(limit=100)
-
-def topPostsAllTime(searchbase, searchbase2 = None):
-	print("topPostsAllTime")
-	if(searchbase2 is not None):
-			comments = searchbase.top(time_filter='all', limit=100)
-			submissions = searchbase2.top(time_filter='all', limit=100)
-			usersText = list()
-			for comment in comments:
-				usersText.append(comment.body)
-
-			for sub in submissions:
-				usersText.append(sub.selftext)
-			return usersText
-	else:
-		return searchbase.new(time_filter='all', limit=100)
+def topPostsAllTime(searchbase):
+	return searchbase.top(time_filter='all', limit=100)
 	
-def topPostsPast24Hours(searchbase, searchbase2 = None):
-	print("topPostsPast24Hours")
-	if(searchbase2 is not None):
-			comments = searchbase.top(time_filter='day', limit=100)
-			submissions = searchbase2.top(time_filter='day', limit=100)
-			usersText = list()
-			for comment in comments:
-				usersText.append(comment.body)
+def topPostsPast24Hours(searchbase):
+	return searchbase.top(time_filter='day', limit=100)
 
-			for sub in submissions:
-				usersText.append(sub.selftext)
-			return usersText
-	else:
-		return searchbase.new(time_filter='day', limit=100)
-
-def controversalPostsAllTime(searchbase, searchbase2 = None):
-	print("controversalPostsAllTime")
-	if(searchbase2 is not None):
-			comments = searchbase.controversalall(time_filter='all', limit=100)
-			submissions = searchbase2.controversalall(time_filter='all', limit=100)
-			usersText = list()
-			for comment in comments:
-				usersText.append(comment.body)
-
-			for sub in submissions:
-				usersText.append(sub.selftext)
-			return usersText
-	else:
-		return searchbase.controversial(time_filter='all', limit=100)
+def controversialPostsAllTime(searchbase):
+	return searchbase.controversial(time_filter='all', limit=100)
 	
-def controversalPast24Hours(searchbase, searchbase2 = None):
-	print("controversalPast24Hours")
-	if(searchbase2 is not None):
-			comments = searchbase.controversalall(time_filter='day', limit=100)
-			submissions = searchbase2.controversalall(time_filter='day', limit=100)
-			usersText = list()
-			for comment in comments:
-				usersText.append(comment.body)
+def controversialPast24Hours(searchbase):
+	return searchbase.controversial(time_filter='day', limit=100)
 
-			for sub in submissions:
-				usersText.append(sub.selftext)
-			return usersText
-	else:
-		return searchbase.controversial(time_filter='day', limit=100)
-
-def creepOnUser(user):
-	return
-
-switch = {"new": lambda x,y=None: newPosts(x,y),
-		  "hot": lambda x,y=None: hotPosts(x,y),
-		  "topalltime": lambda x,y=None: topPostsAllTime(x,y),
-		  "top24hrs": lambda x,y=None: topPostsPast24Hours(x,y),
-		  "controversalall": lambda x,y=None: controversalPast24Hours(x,y),
-		  "controversal24hrs": lambda x,y=None: controversalPast24Hours(x,y),
+switch = {"new": lambda x: newPosts(x),
+		  "hot": lambda x: hotPosts(x),
+		  "topalltime": lambda x: topPostsAllTime(x),
+		  "top24hrs": lambda x: topPostsPast24Hours(x),
+		  "controversialall": lambda x: controversialPast24Hours(x),
+		  "controversial24hrs": lambda x: controversialPast24Hours(x),
 }
 
-@app.route('/r/<sr>/<category>/')
+@app.route('/r/<sr>/contributors/<category>')
+def contributorsToSubreddit(sr, category):
+	funct = switch.get(category)
+	subreddit = reddit.subreddit(sr)
+	submissions = funct(subreddit)
+	contributers = filter(lambda x: x != None, [x.author for x in submissions])
+	return render_template('index.html', data=contributers)
+
+	
+
+@app.route('/r/<sr>/<category>')
 def wordCountSubreddit(sr, category):
 	funct = switch.get(category)
 	subreddit = reddit.subreddit(sr)
@@ -150,22 +85,27 @@ def wordCountSubreddit(sr, category):
 		labels.append(word[0])
 		values.append(word[1])
 
-	# Generate chart.
 	fig = plt.figure()
-	plt.bar(range(len(labels)), values, tick_label=labels)
-	ax1 = fig.add_subplot(111)
-	fig.subplots_adjust(top=0.85)
-	ax1.set_xlabel('Word')
-	y_rotate=ax1.set_ylabel('Instances')
-	y_rotate.set_rotation(0)
-
-	#Generate Word Cloud
-	text = str(sortedWords)
-	wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
-	plt.imshow(wordcloud, interpolation='bilinear')
-	plt.axis("off")
-	plt.margins(x=0, y=0)
-	#plt.show()
+	if sortedWords:
+	# Generate Chart
+		plt.subplot(1, 2, 1)
+		plt.bar(range(len(labels)), values, tick_label=labels)
+		ax1 = fig.add_subplot(121) #changed from 111
+		fig.subplots_adjust(top=0.85)
+		ax1.set_xlabel('Word')
+		y_rotate=ax1.set_ylabel('Instances')
+		y_rotate.set_rotation(0)
+	# Generate Word Cloud
+		plt.subplot(1, 2, 2) #originally 122
+		text = str(sortedWords)
+		text = text.replace("'", "")
+		wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
+		plt.imshow(wordcloud, interpolation='bilinear')
+		plt.axis("off")
+		plt.margins(x=0, y=0)
+	else:
+		plt.text(0.5,0.5,'stuff')
+		#placeholder until we have a useful empty result page
 
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
 
@@ -176,7 +116,13 @@ def wordCountUser(user, category):
 	comments = user.comments
 	submissions = user.submissions
 	funct = switch.get(category)
-	usersText = funct(comments, submissions)
+	commentWords = funct(comments)
+	submissionWords = funct(submissions)
+	usersText = list()
+	for comment in commentWords:
+		usersText.append(comment.body)
+	for sub in submissionWords:
+		usersText.append(sub.selftext)
 	sortedWords = countWords(usersText, punctRm, excludeWordsList)
 	sortedWords = sortedWords[:50]
 	labels = list()
@@ -184,22 +130,29 @@ def wordCountUser(user, category):
 	for word in sortedWords:
 		labels.append(word[0])
 		values.append(word[1])
-
-	# Generate chart.
+	
 	fig = plt.figure()
-	plt.bar(range(len(labels)), values, tick_label=labels)
+	if sortedWords:
+	# Generate Chart
+		plt.subplot(1, 2, 1) #change to specific one
+		plt.bar(range(len(labels)), values, tick_label=labels)
+		ax1 = fig.add_subplot(121)
+		fig.subplots_adjust(top=0.85)
+		ax1.set_xlabel('Word')
+		y_rotate=ax1.set_ylabel('Instances')
+		y_rotate.set_rotation(0)
+	# Generate Word Cloud
+		plt.subplot(1,2,2) #originally 122
+		text = str(sortedWords)
+		text = text.replace("'", "")
+		wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
+		plt.imshow(wordcloud, interpolation='bilinear')
+		plt.axis("off")
+		plt.margins(x=0, y=0)
+	else:
+		plt.text(0.5,0.5,'stuff')
+		#placeholder until we have a useful empty result page
 
-	ax1 = fig.add_subplot(111)
-	fig.subplots_adjust(top=0.85)
-	ax1.set_xlabel('Word')
-	y_rotate=ax1.set_ylabel('Instances')
-	y_rotate.set_rotation(0)
-
-	#Generate Word Cloud
-	text = str(sortedWords)
-	wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
-	plt.imshow(wordcloud, interpolation='bilinear')
-	plt.axis("off")
-	plt.margins(x=0, y=0)
-	#plt.show()
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
+
+
