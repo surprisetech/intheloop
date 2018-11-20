@@ -109,6 +109,20 @@ def wordCountSubreddit(sr, category):
 
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
 
+#Compare words user posts in a subreddit to their other subreddits
+@app.route('/c/<user>/<sr>/<category>')
+def compareUserReddits(user, sr, category):
+        funct = switch.get(category)
+        subreddit = reddit.subreddit(sr)
+        submissions = funct(subreddit)
+        posts = list()
+        for i in submissions:
+                if i.author.name == user:
+                        posts.append(i.selftext + " " + i.title)
+
+        return posts[0]
+
+
 #word popularity by user
 @app.route('/u/<user>/<category>')
 def wordCountUser(user, category):
