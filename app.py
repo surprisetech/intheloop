@@ -8,6 +8,7 @@ from config import RedditConfig
 
 # Send "public/any.name" when route "<site>.com/{any.name}" is hit
 app = Flask(__name__, static_url_path="", static_folder="static", template_folder='templates')
+import errors
 
 # Initialize PRAW (reddit wrapper) from config.py
 # DO NOT push config.py to github, we do not want to
@@ -69,8 +70,6 @@ def contributorsToSubreddit(sr, category):
 	contributers = filter(lambda x: x != None, [x.author for x in submissions])
 	return render_template('index.html', data=contributers)
 
-	
-
 @app.route('/r/<sr>/<category>')
 def wordCountSubreddit(sr, category):
 	funct = switch.get(category)
@@ -90,11 +89,12 @@ def wordCountSubreddit(sr, category):
 	# Generate Chart
 		plt.subplot(1, 2, 1)
 		plt.bar(range(len(labels)), values, tick_label=labels)
-		ax1 = fig.add_subplot(111)
+		ax1 = fig.add_subplot(121)
 		fig.subplots_adjust(top=0.85)
 		ax1.set_xlabel('Word')
 		y_rotate=ax1.set_ylabel('Instances')
 		y_rotate.set_rotation(0)
+		ax1.set_title('/r/' + str(sr))
 	# Generate Word Cloud
 		plt.subplot(1, 2, 2)
 		text = str(sortedWords)
@@ -104,8 +104,9 @@ def wordCountSubreddit(sr, category):
 		plt.axis("off")
 		plt.margins(x=0, y=0)
 	else:
-		plt.text(0.5,0.5,'stuff')
-		#placeholder until we have a useful empty result page
+		plt.text(0.5,0.5,'There are no posts for the selected search.')
+		#can make this route to one of the error pages
+		#or have it suggest similar search like /u instead of /r etc
 
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
 
@@ -150,11 +151,12 @@ def wordCountUser(user, category):
 	# Generate Chart
 		plt.subplot(1, 2, 1)
 		plt.bar(range(len(labels)), values, tick_label=labels)
-		ax1 = fig.add_subplot(111)
+		ax1 = fig.add_subplot(121)
 		fig.subplots_adjust(top=0.85)
 		ax1.set_xlabel('Word')
 		y_rotate=ax1.set_ylabel('Instances')
 		y_rotate.set_rotation(0)
+		ax1.set_title('/u/' + str(user))
 	# Generate Word Cloud
 		plt.subplot(1, 2, 2)
 		text = str(sortedWords)
@@ -164,7 +166,8 @@ def wordCountUser(user, category):
 		plt.axis("off")
 		plt.margins(x=0, y=0)
 	else:
-		plt.text(0.5,0.5,'stuff')
-		#placeholder until we have a useful empty result page
+		plt.text(0.5,0.5,'There are no posts for the selected search.')
+		#can make this route to one of the error pages
+		#or have it suggest similar search like /u instead of /r etc
 
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))

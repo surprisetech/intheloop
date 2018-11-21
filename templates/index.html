@@ -21,6 +21,7 @@
         </script>
     </head>
     <body>
+        <img src="logo.png" alt="Seeing Redd Logo" style="position:fixed;top:0;right:0;padding:20px">
         <div class="head" style="position:fixed;top:0;left:0;padding:20px">
             <form id="redditSearch" onsubmit="return doSearch();">
                 <label>Search Seeing Redd:</label><br>
@@ -44,11 +45,13 @@
                 <input type="submit" value="submit">
             </form>
         </div>
-
+        <div>
+            {% block content %}
+            {% endblock %}
+        </div>
         <div class="chart">{{ chart | safe }}</div>
         {% for item in data %}
             {{ item }}<br/>
         {% endfor %}
-        <!-- <div class="cloud">{{ cloud | safe }}</div> -->
     </body>
 </html>
