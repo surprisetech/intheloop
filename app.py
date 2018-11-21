@@ -94,7 +94,7 @@ def wordCountSubreddit(sr, category):
 		ax1.set_xlabel('Word')
 		y_rotate=ax1.set_ylabel('Instances')
 		y_rotate.set_rotation(0)
-		ax1.set_title('/r/' + str(sr))
+		ax1.set_title('/r/' + str(subreddit))
 	# Generate Word Cloud
 		plt.subplot(1, 2, 2)
 		text = str(sortedWords)
