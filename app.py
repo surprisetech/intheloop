@@ -23,7 +23,6 @@ reddit = praw.Reddit(client_id=RedditConfig.id,
                      client_secret=RedditConfig.secret,
                      user_agent=RedditConfig.userAgent)
 
-
 # Remap '/' to index. Other files can be served statically.
 @app.route('/')
 def index():
@@ -58,8 +57,9 @@ switch = {"new": lambda x: newPosts(x),
 		  "hot": lambda x: hotPosts(x),
 		  "topalltime": lambda x: topPostsAllTime(x),
 		  "top24hrs": lambda x: topPostsPast24Hours(x),
-		  "controversialall": lambda x: controversialPast24Hours(x),
+		  "controversialall": lambda x: controversialPostsAllTime(x),
 		  "controversial24hrs": lambda x: controversialPast24Hours(x),
+		  #how can we refactor these to work with the changes in the index function?
 }
 
 @app.route('/r/<sr>/contributors/<category>')
@@ -122,7 +122,6 @@ def compareUserReddits(user, sr, category):
                         posts.append(i.selftext + " " + i.title)
 
         return posts[0]
-
 
 #word popularity by user
 @app.route('/u/<user>/<category>')
