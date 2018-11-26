@@ -17,3 +17,7 @@ Feature: User sees welcome page
     Given we select menu to select subreddit
     Then we should see a menu to select category
 
+  Scenario: Logo button returns to welcome page
+    Given we are browsing surprisetech.pythonanywhere.com/r/tifu/category
+    When we select logo button
+    Then we should be browsing surprisetech.pythonanywere.com
