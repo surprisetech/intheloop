@@ -2,11 +2,12 @@
     <head>
         <link rel="stylesheet" href="/style.css" />
         <script>
+            //window.localStorage; //can we maintain the vars outside the functions to eliminate the duplicated code?
             function EnableDrop() { document.getElementById("onlyR").disabled=false; }
             function DisableDrop() { document.getElementById("onlyR").disabled=true; }
             function doSearch() {
-                var type = "";
                 var domain = window.location.protocol + "//" + window.location.host + "/";
+                var type = "";
                 var button1 = document.getElementById("r");
                 var button2 = document.getElementById("u");
                 if (button1.checked) {
@@ -18,9 +19,46 @@
                 location.href = url;
                 return false;
             }
+            function goToReddit() {
+                var type = "";
+                var button1 = document.getElementById("r");
+                var button2 = document.getElementById("u");
+                if (button1.checked) {
+                    type = "r/";
+                } else if (button2.checked) {
+                    type = "u/";
+                }
+                //there must be a better way than what i did below, can reddit api create these routes?
+                var cat = document.getElementById("category").value;
+                if (cat == "new" && type == "u/"){
+                    cat = "?sort=new";
+                } else if (cat == "hot" && type == "u/"){
+                    cat = "?sort=hot";
+                } else if (cat == "topalltime"){
+                    if (type = "r/") { cat = "top/?t=all"; }
+                    else if (type = "u/") { cat = "?sort=top&t=all"; }
+                } else if (cat == "top24hrs"){
+                    if (type = "r/") { cat = "top/?t=day"; }
+                    else if (type = "u/") { cat = "?sort=top&t=day"; }
+                } else if (cat == "controversialall"){
+                    if (type = "r/") { cat = "controversial/?t=all"; }
+                    else if (type = "u/") { cat = "?sort=controversial&t=all"; }
+                } else if (cat == "controversial24hrs"){
+                    if (type = "r/") { cat = "controversial/?t=day"; }
+                    else if (type = "u/") { cat = "?sort=controversial&t=day"; }
+                }
+                //i tried changing the switch values in app.py, it worked for the link to reddit but broke the search on our site
+                var dest = "https://www.reddit.com/" + type.valueOf() + document.getElementById("q").value + "/" + cat.valueOf();
+                confirm('Continue to the Reddit source of your search?');
+                window.location.href = dest.valueOf();
+                return false;
+            }
         </script>
     </head>
     <body>
+        <a href = "{{ url_for('index') }}">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Seeing Redd Logo" style="position:fixed;top:0;right:0;padding:20px" width="300" height="100" />
+        </a>
         <div class="head" style="position:fixed;top:0;left:0;padding:20px">
             <form id="redditSearch" onsubmit="return doSearch();">
                 <label>Search Seeing Redd:</label><br>
@@ -30,23 +68,38 @@
                     <input type="radio" name="page" id="u" value="user" onclick="DisableDrop();">
                 <input type="search" name="url" id="q">
                 <select id="category" form="redditSearch">
+                        <option value="" selected disabled hidden>Sort here</option>
                     <optgroup id="RorU" label="R or U">
+                        <!-- also change these values if we refactor the switch in app-->
                         <option value="new">New</option>
                         <option value="hot">Hot</option>
                         <option value="topalltime">Top All</option>
-                        <option value="top24hrs">Top 24</option>
+                        <option value="top24hrs">Top Day</option>
                     </optgroup>
                     <optgroup id="onlyR" label="only R">
-                        <option value="controversalall">Controversial All</option>
-                        <option value="controversal24hrs">Controversial 24</option>
+                        <option value="controversialall">Controversial All</option>
+                        <option value="controversial24hrs">Controversial Day</option>
                     </optgroup>
-                    <!-- maintain the spelling on contro unless its fixed elsewhere -->
                 </select><br>
                 <input type="submit" value="submit">
             </form>
         </div>
-
-        <div class="chart">{{ chart | safe }}</div>
-        <!-- <div class="cloud">{{ cloud | safe }}</div> -->
+        <div>
+            {% block content %}
+            {% endblock %}
+        </div>
+        <div class="chart">
+            {{ chart | safe }}
+        </div>
+        <div>
+            <a href="javascript:void(0)" onclick="goToReddit()">
+                Go to Reddit
+                <img src="https://upload.wikimedia.org/wikipedia/en/5/58/Reddit_logo_new.svg" alt="Reddit Logo">
+                <!-- are we allowed to use this image from wikipedia? 20mil EU fines??? -->
+            </a>
+        </div>
+        {% for item in data %}
+            {{ item }}<br/>
+        {% endfor %}
     </body>
 </html>
