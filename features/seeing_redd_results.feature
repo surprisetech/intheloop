@@ -10,8 +10,8 @@ Feature: See results
       | hot               |
       | topalltime        |
       | top24hrs          |
-      | controversalall   |
-      | controversal24hrs |
+      | controversialall   |
+      | controversial24hrs |
 
   Scenario Outline: Search for user results
      Given we are browsing surprisetech.pythonanywhere.com/
@@ -23,5 +23,5 @@ Feature: See results
       | hot               |
       | topalltime        |
       | top24hrs          |
-      | controversalall   |
-      | controversal24hrs |
+      | controversialall   |
+      | controversial24hrs |
