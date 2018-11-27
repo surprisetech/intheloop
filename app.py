@@ -1,6 +1,5 @@
 import string
 from wordcloud import WordCloud
-import matplotlib
 import matplotlib.pyplot as plt, mpld3
 from flask import Flask, send_file, json, render_template
 import praw
@@ -18,9 +17,6 @@ import errors
 reddit = praw.Reddit(client_id=os.environ["praw_id"],
                      client_secret=os.environ["praw_secret"],
                      user_agent=os.environ["praw_agent"])
-
-# Allow matplotlib to work without xwindows
-matplotlib.use('Agg')
 
 # Remap '/' to index. Other files can be served statically.
 @app.route('/')
