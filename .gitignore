@@ -113,3 +113,6 @@ venv.bak/
 # VSCode
 .vscode/
 tmp.py
+
+node_modules/
+cypress/videos/
