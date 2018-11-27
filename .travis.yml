@@ -10,7 +10,6 @@ python:
   - "3.6"
 before_install:
   - "pip3 install -r requirements.txt"
-install:
   - "npm install"
 notifications:
     slack: surprisetech:j8bAuVBQphzqvvpkfZ2FDSXs
