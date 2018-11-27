@@ -1,5 +1,5 @@
 function timeSearch(time) {
-    cy.visit('surprisetech.pythonanywhere.com')
+    cy.visit('localhost:5000')
 
     cy.get('#r').click()
     cy.get('#q').type('tifu')

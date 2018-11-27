@@ -1,19 +1,23 @@
 sudo: false
-dist: "trusty" # otherwise 'python3-pip' won't be available
+dist: trusty
 language: python
 addons:
   apt:
     packages:
-      - "python3"
-      - "python3-pip"
-python: 
-  - "3.6"
+    - python3
+    - python3-pip
+python:
+- '3.6'
 before_install:
-  - "pip3 install -r requirements.txt"
-  - "npm install"
+- pip3 install -r requirements.txt
+- npm install
 notifications:
-    slack: surprisetech:j8bAuVBQphzqvvpkfZ2FDSXs
+  slack: surprisetech:j8bAuVBQphzqvvpkfZ2FDSXs
 before_script:
-  - "FLASK_APP=app.py flask run &"
+- $REDDIT_CONFIG > config.py
+- FLASK_APP=app.py flask run &
 script:
-  - pytest
+- pytest
+env:
+  global:
+    secure: CUrmRKxm4MuWUkZ8euYqfT3626YWHSokULM88BcqpANh+CIEzSFi5QE/mL/kzv/M0WjgDMsm14MZDEKgnmAYKFVTRRr0nZlFj9vqq17epDxUWOPd//cVRGaoSUrl7aIiql+JqYr3tnydRQrfsHCsoapBOVFa3LcXfhj1O41Ww47+kH15Rt1UMEUg9nUusWw4v7ap9xFdkX1iEbE1Kd7z4Gm5sXVhW5upLqzWT1puiIHPVf+hgeJCxjpTcs346lJZdxh29Dw+Jwil3mj8Am0VTPNFsH8tQIo43OIasDIViv9wCXD9JtWpuF1otgh28o2XXxrZv3B+Urb4e5V4PLt98+DIxb2C9PqiHlGT8g5ew5YKiCBBdANjHRomjD4bUjC2il1zvaS80zMOON9mjlDhvlnoYsv82fYJOfOzPFywBc9sOItXe15lYjzJRrvVQoFJRmDl6WQaWvxqduBnHNM8doSNs/2kyL1mABhBbLYWUp3I2M76woR1y+vpZJNJl9RvlUXsk80R/ZITrvgHqtp6Yy1gVd0D/c0WsPJjQf59u4qID8dSrICztrxOG3bpBoN7Z1areRgoL92ZME/NkYKU07YWDcmTa747NEEo3R/JYWzzNz8La1qmwgt4xeKnqXyYZTglfd7qufremTkQycMs44lhunDSxLnKFEHjaljNky8=
