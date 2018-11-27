@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt, mpld3
 from flask import Flask, send_file, json, render_template
 import praw
 from wordOps import countWords, punctRm, excludeWordsList
-from config import RedditConfig
+import os
+import config
 
 # Send "public/any.name" when route "<site>.com/{any.name}" is hit
 app = Flask(__name__, static_url_path="", static_folder="static", template_folder='templates')
@@ -19,9 +20,9 @@ import errors
 #     id = '<client_id>'
 #     secret = '<client_secret>'
 #     userAgent = '<user_agent>'
-reddit = praw.Reddit(client_id=RedditConfig.id,
-                     client_secret=RedditConfig.secret,
-                     user_agent=RedditConfig.userAgent)
+reddit = praw.Reddit(client_id=os.environ["praw_id"],
+                     client_secret=os.environ["praw_secret"],
+                     user_agent=os.environ["praw_agent"])
 
 # Remap '/' to index. Other files can be served statically.
 @app.route('/')
