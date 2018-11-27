@@ -14,4 +14,4 @@ before_install:
 notifications:
     slack: surprisetech:j8bAuVBQphzqvvpkfZ2FDSXs
 script:
-  - "FLASK_APP=app.py flask run & pytest &
+  - "FLASK_APP=app.py flask run & pytest &"
