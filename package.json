@@ -1,0 +1,22 @@
+{
+  "name": "intheloop",
+  "version": "1.0.0",
+  "description": "To run the application from commandline (linux)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/surprisetech/intheloop.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/surprisetech/intheloop/issues"
+  },
+  "homepage": "https://github.com/surprisetech/intheloop#readme",
+  "dependencies": {
+    "cypress": "^3.1.2"
+  }
+}

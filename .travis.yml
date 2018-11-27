@@ -1,16 +1,32 @@
 sudo: false
-dist: "trusty" # otherwise 'python3-pip' won't be available
+dist: trusty
 language: python
 addons:
   apt:
     packages:
-      - "python3"
-      - "python3-pip"
-python: 
-  - "3.6"
+    - python3
+    - python3-pip
+python:
+- '3.6'
 before_install:
-  - "pip3 install -r requirements.txt"
+- pip3 install -r requirements.txt
+- npm install
 notifications:
-    slack: surprisetech:j8bAuVBQphzqvvpkfZ2FDSXs
+  slack: surprisetech:j8bAuVBQphzqvvpkfZ2FDSXs
+before_script:
+
+# Gives a simulated display for matplotlib
+# src: https://stackoverflow.com/questions/35403127/testing-matplotlib-based-plots-in-travis-ci
+- "export DISPLAY=:99.0"
+- "sh -e /etc/init.d/xvfb start"
+- sleep 3 # give xvfb some time to start
+
+- touch config.py
+- FLASK_APP=app.py flask run &
 script:
-  - pytest
+- pytest
+env:
+  global:
+  - secure: cPumVgehHxyCXyhlSk5mWC/vcZMz9EPP71Lzey7iEv09528WSb1jhMvIeGJolkQsgYpjEbyy1wTkZ3KW7K7FXS17VSzRt2uHGWHMT1KW/ST99ZcFGUnLwGqzUIrXzwVkaBbAnyNp73MGa+gBTsHkcTmG1e2Sxvjf9lo4sOifj5yyRON5T/35+4Dgt8Lyx0YVMNxMt+onXCbMqOjDXOCzfrYE6T3jphYPMq+k48whZGQbSkLRtQDlvVmiMsZGKwDKovBQz3kYNJB2rCETVkUf/U0D8F7aXfJHcE+n3NZ8ZVmh6km+FVxsu+B64s5D2+3XKxklLYruuLS4cyUH3+q2iTMhOsplFZwPEwxtF6t1kDfBgwlGSyeERNxs/dz457aYYx4n7lYt1am5+5qjOor/lI2pIAVuwT/TMfA18fMgs40bHguibtiQKkY563t6KYTQ5a6slDSeUqCMSFUZyVL8t1D83a2TLmWFzhYu2bgQx95ZwMVxaTrpoIvSg9EN3aSyHxlKCYdKsoJ4vREUGwUX3P7Zc3puLDBXIcbnCyiypw4oneqimud+E6QkCoIIjhR1BW9cx65qwA1JhTI/rABRts3vGKrQMDO6jhMcW07aVJdzctgUyQ0JU36k1OlZ49KXR03wH29OJ8cY9UsGDTS4gWAFh3fqDgFcJPO8b8Kn5rA=
+  - secure: D35iVW2ApNmbK+ekW7N4KEXuoi8WuYSskrmdt89YpzFOU1/0/jIBS1QrBhjWLtTyOnGcRwDoXTkauU7Fo7zn8aFZN8zOcmsEKU/PJaoTZiHVm/YKC3HRvaKxoXiCfZnhWNVlyCJsDnZ4WZOPlP9feqHA3bk83IEHQyX9q9czD1cG7F536rGsGpO8VSw8hFdwocmMj9B+zwZYVP2qKaK/5AtSNoCFMimqOpW62B5roalE18gTBwdfFvCtDuvnVuOeKpjqJqFFXDRmXFdYNEEgS1E1tvV0cl84xHPffmkvvR+diKQQG5FL0E0YxljH4Z+aG4dSjiIeS6JhKRg4TCx5Yo9xIRRFdqqd8tu0K2zjvyHZ+9wi/R7+IF3/JceN/9D67pSxVw+uhC9LuGb86Ox5oNuGxKy4lwDWh8YtP4UAJThFZ8FLmSFNuJlFOYgDzcUhVoizS5Erj1xknp1hCKfBwHjcG1eI5NQP8ykeZxMw33cR2S9mgo/h9pKHkyab/q73znTDQ/MEsIzO3E24d/ig4Zi2VqwJipgub40fdg/xLSBFlJepGhlBntNFqD3sBox8pxQII8Q+WsramJpL+fEfdu1C1PkKp+OBeEsyEnxAq/ggGJUTAGpJl3gmhanfDbqrOzoJtsmmiN/VnP428D+XtQZsmSwhhqAJ7xi2Mx9f4PU=
+  - secure: o4L64wjoUT9xmDlCus4CzMiITDdr0MCHvmsoRF31eIYrTSDRFItaqGH/bhAQSUrV44esiPUuF5sdMmLXwxxZZ0yePUmWtXARO9ww1ttZ2s1XKk2Psyv0QrQYcbU1cExf3HKDegqhPT7ZSFibLIqx2ZeJ+AUh1tAkNse/ltYq/7C5BbpzC+UUoIS32tn3EyMU8NAOaXJR/fJQzbBf3MsX4GDmaQRW+Ol7TRbPLAW5dZkkLemlvoV2n657GWU/BYSDRtibt846clj2si0EnAEZvo6Zjhp5W7G38U2Ry5UDV1943EMtZQw006towZSEVic8BNzRT1gMJBuoCH+mWDq5Z716A3TpqVkyMSQceu4BZ70iyB8eJgdprc1Q14cfopj5dbF5Cfl0HfOgM54nRkJhmulBTkux2ciUK7KVrggytQlaHeOIpFx91Qkik1wllvCJqYgNOZVuMp2g+KZFvLxW0N7cqyr/PjBrTiedkSYctErWsGEOSjEzqGJm+kIYg2Jagoy6oBTfCc0NpdThaI/CTUTQvaX9KLwdaRT2vkwXlSujdTVXa11hs05ETpV7Pr4N7/x5UoUHZy8NC6hfVFWHrihAko6QV92ziHi6CJpd1VHf3Bb9Fn2sVBiL11eCZJcOJ+nImKVvjgYrPdxq3OSOzVHTRGAQFcBMtuyv6caRL9o=
