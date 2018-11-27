@@ -14,7 +14,7 @@ before_install:
 notifications:
   slack: surprisetech:j8bAuVBQphzqvvpkfZ2FDSXs
 before_script:
-- $REDDIT_CONFIG > config.py
+- echo $REDDIT_CONFIG > config.py
 - FLASK_APP=app.py flask run &
 script:
 - pytest
