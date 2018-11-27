@@ -13,5 +13,7 @@ before_install:
   - "npm install"
 notifications:
     slack: surprisetech:j8bAuVBQphzqvvpkfZ2FDSXs
+before_script:
+  - "FLASK_APP=app.py flask run &"
 script:
-  - "FLASK_APP=app.py flask run & pytest &"
+  - pytest
