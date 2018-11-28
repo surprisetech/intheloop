@@ -2,7 +2,7 @@ Feature: User sees welcome page
 
   Scenario: Access main site
      Given we are browsing surprisetech.pythonanywhere.com/
-       Then we should see a "Welcome!"
+       Then we should see "Welcome to Seeing Redd"
 
   Scenario: Search tifu Subreddit and hot category
      Given we are browsing surprisetech.pythonanywhere.com/

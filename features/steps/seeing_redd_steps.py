@@ -9,7 +9,7 @@ def step_impl(context):
     context.browser = browser 
     browser.get("http://surprisetech.pythonanywhere.com")
     time.sleep(4)
-    #assert "Welcome" in browser.title
+    assert 'Welcome to Seeing Redd.' in browser.page_source 
 
 @when(u'we search tifu subreddit and {category}')
 def step_impl(context,category):
@@ -26,7 +26,7 @@ def step_impl(context):
     browser = context.browser
     assert "mpld3" in browser.page_source
 
-@then(u'we should see a "Welcome!"')
+@then(u'we should see \"Welcome to Seeing Redd\"')
 def step_impl(context):
     browser = context.browser
-    assert 'Wecome!' in browser.title 
+    assert 'Welcome to Seeing Redd.' in browser.page_source 
