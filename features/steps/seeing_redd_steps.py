@@ -9,7 +9,7 @@ def step_impl(context):
     context.browser = browser 
     browser.get("http://surprisetech.pythonanywhere.com")
     time.sleep(4)
-    #assert "Welcome" in browser.title
+    assert 'Welcome to Seeing Redd.' in browser.page_source 
 
 @when(u'we search tifu subreddit and {category}')
 def step_impl(context,category):
@@ -26,7 +26,23 @@ def step_impl(context):
     browser = context.browser
     assert "mpld3" in browser.page_source
 
-@then(u'we should see a "Welcome!"')
+@then(u'we should see \"Welcome to Seeing Redd\"')
 def step_impl(context):
     browser = context.browser
-    assert 'Wecome!' in browser.title 
+    assert 'Welcome to Seeing Redd.' in browser.page_source 
+
+@given(u'we are browsing surprisetech.pythonanywhere.com/r/tifu/{category}')
+def step_impl(context,category):
+    browser = webdriver.Chrome()
+    context.browser = browser
+    browser.get("http://surprisetech.pythonanywhere.com/r/tifu/" + category)
+    assert "mpld3" in browser.page_source
+
+@when(u"we type tifu in search box and select {category}")
+def step_impl(context,category):
+    browser = context.browser
+    browser.find_element_by_id('r').click
+    searchbox = browser.find_element_by_id("q")
+    searchbox.send_keys("tifu")
+    browser.find_element_by_xpath("//select[@name='category']/option[text()='{category}']").click()
+    searchbox.send_keys(Keys.RETURN)

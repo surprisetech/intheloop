@@ -21,6 +21,26 @@ def countWords(textList, punctRm, excludeWordsList):
 
     return sortedWords
 
+def totalKarmaOfWords(wordList, submissions):
+    """
+    :param wordList: a list of str, the words to be examined
+    :param submission: a list of submission objects, they contain the score to be tallied
+    :return: A list containing pairs, the first object of the pair is the word, and the second
+             is the total score for that word.
+    """
+    karmaList = list()
+    for word in wordList:
+        submissionsWithWord = list()
+        for submission in submissions:
+            if word in submission.selftext or submission.title:
+                submissionsWithWord.append(submission)
+        totalKarma = 0
+        for submission in submissionsWithWord:
+            totalKarma += submission.score
+        karmaList.append((word, totalKarma))
+    #print(karmaList)
+    return karmaList
+
 
 punctRm = str.maketrans('', '', string.punctuation + "“”’")
 excludeWordsList = ['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'on',

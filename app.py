@@ -3,7 +3,7 @@ from wordcloud import WordCloud
 import matplotlib.pyplot as plt, mpld3
 from flask import Flask, send_file, json, render_template
 import praw
-from wordOps import countWords, punctRm, excludeWordsList
+from wordOps import countWords, punctRm, excludeWordsList, totalKarmaOfWords
 from config import RedditConfig
 
 # Send "public/any.name" when route "<site>.com/{any.name}" is hit
@@ -78,6 +78,8 @@ def wordCountSubreddit(sr, category):
 	posts = list(map(lambda x: x.selftext + " " + x.title, submissions))
 	sortedWords = countWords(posts, punctRm, excludeWordsList)
 	sortedWords = sortedWords[:50]
+	#Here is likely where you want to figure out karma of words
+	#totalKarmaOfWords(sortedWords, submissions)
 	labels = list()
 	values = list()
 	for word in sortedWords:
@@ -139,6 +141,8 @@ def wordCountUser(user, category):
 		usersText.append(sub.selftext)
 	sortedWords = countWords(usersText, punctRm, excludeWordsList)
 	sortedWords = sortedWords[:50]
+	#Here is likely where you want to figure out karma of words
+	#totalKarmaOfWords(sortedWords, submissions)
 	labels = list()
 	values = list()
 	for word in sortedWords:
