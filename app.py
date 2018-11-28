@@ -135,10 +135,13 @@ def wordCountUser(user, category):
 	commentWords = funct(comments)
 	submissionWords = funct(submissions)
 	usersText = list()
+	subredditStrings = list()
 	for comment in commentWords:
 		usersText.append(comment.body)
+		subredditStrings.append(str(comment.subreddit))
 	for sub in submissionWords:
 		usersText.append(sub.selftext)
+		subredditStrings.append(str(sub.subreddit))
 	sortedWords = countWords(usersText, punctRm, excludeWordsList)
 	sortedWords = sortedWords[:50]
 	#Here is likely where you want to figure out karma of words
@@ -148,11 +151,19 @@ def wordCountUser(user, category):
 	for word in sortedWords:
 		labels.append(word[0])
 		values.append(word[1])
+
+	sortedSubreddits = countWords(subredditStrings, "~", [""])
+	srLabels = list()
+	srValues = list()
+	for word in sortedSubreddits:
+		srLabels.append(word[0])
+		srValues.append(word[1])
 	
 	fig = plt.figure()
 	if sortedWords:
-	# Generate Chart
-		plt.subplot(1, 2, 1)
+		
+		# Generate Chart
+		plt.subplot(2, 2, 1)
 		plt.bar(range(len(labels)), values, tick_label=labels)
 		ax1 = fig.add_subplot(121)
 		fig.subplots_adjust(top=0.85)
@@ -160,14 +171,26 @@ def wordCountUser(user, category):
 		y_rotate=ax1.set_ylabel('Instances')
 		y_rotate.set_rotation(0)
 		ax1.set_title('/u/' + str(user))
-	# Generate Word Cloud
-		plt.subplot(1, 2, 2)
+		
+		# Generate Word Cloud
+		plt.subplot(2, 2, 2)
 		text = str(sortedWords)
 		text = text.replace("'", "")
 		wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
 		plt.imshow(wordcloud, interpolation='bilinear')
 		plt.axis("off")
 		plt.margins(x=0, y=0)
+		
+		#Generate plot of subreddits user is active in.
+		plt.subplot(2, 2, 3)
+		plt.bar(range(len(srLabels)), srValues, tick_label=srLabels)
+		ax2 = fig.add_subplot(223)
+		#fig.subplots_adjust(top=0.85)
+		ax2.set_xlabel('Subreddits')
+		y_rotate=ax2.set_ylabel('Posts')
+		y_rotate.set_rotation(0)
+		ax2.set_title('Posts per Subreddit')
+
 	else:
 		plt.text(0.5,0.5,'There are no posts for the selected search.')
 		#can make this route to one of the error pages
