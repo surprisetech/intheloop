@@ -53,6 +53,7 @@ def step_impl(context,category):
     searchbox.send_keys("tifu")
     searchbox.send_keys(Keys.RETURN)
 
-#@then(u"we should be at page surprisetech.pythonanywhere.com/count/tifu/{category}")
-#def step_impl(context,category):
-#    print ("hello world")
+@then(u'we should be at page surprisetech.pythonanywhere.com/r/tifu/{url}')
+def step_impl(context,url):
+    browser = context.browser
+    assert browser.current_url == ("http://surprisetech.pythonanywhere.com/r/tifu/" + url)

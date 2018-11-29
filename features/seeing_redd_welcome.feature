@@ -4,17 +4,17 @@ Feature: User sees welcome page
      Given we are browsing surprisetech.pythonanywhere.com/
        Then we should see "Welcome to Seeing Redd"
 
-  Scenario Outline: Search tifu Subreddit and hot category
+  Scenario Outline: Search tifu Subreddit and <category>
      Given we are browsing surprisetech.pythonanywhere.com/
        When we type tifu in search box and select <category>
-       Then we should be at page surprisetech.pythonanywhere.com/count/tifu/<category>
+       Then we should be at page surprisetech.pythonanywhere.com/r/tifu/<url>
      Examples: Categories
-       | category          |
-       | Hot               |
-       | Top All           |
-       | Top Day           |
-       | Controversial All |
-       | Controversial Day |
+       | category          | url                |
+       | Hot               | hot                |
+       | Top All           | topalltime         |
+       | Top Day           | top24hrs           |
+       | Controversial All | controversialall   |
+       | Controversial Day | controversial24hrs |
 
   Scenario: Have drop down menu for subreddit or user
     Given we are browsing surprisetech.pythonanywhere.com/
@@ -29,10 +29,10 @@ Feature: User sees welcome page
       When we select logo button
       Then we should be browsing surprisetech.pythonanywere.com
      Examples: Categories
-       | category          |
-       | hot               |
-       | topalltime        |
-       | top24hrs          |
+       | category           |
+       | hot                |
+       | topalltime         |
+       | top24hrs           |
        | controversialall   |
        | controversial24hrs |
 
