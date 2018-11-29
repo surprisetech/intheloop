@@ -155,4 +155,16 @@ def wordCountUser(user, category):
 
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
 
+#need to put in function where you can pass the username and it returns the top comment
+user_name = "spez"  #need to update this with passed in usernames
+
+#need to make a web request
+##@app.route('/u/<user>/')
+##def topComment(user):
+#user_name=comment.author
+##user = reddit.redditor(name=user)
+user=reddit.redditor(user_name)
+print(next(user.comments.top()).body)
+#consider using upvote_ratio for 
+
 
