@@ -152,20 +152,14 @@ def wordCountUser(user, category):
 	else:
 		plt.text(0.5,0.5,'stuff')
 		#placeholder until we have a useful empty result page
-
-	return render_template('index.html', chart=mpld3.fig_to_html(fig))
-
-#need to make a web request
-@app.route('/u/<user_name>/')
-def topComment(user_name):
-	user=reddit.redditor(user_name)
-	#return "<h1>"+ next(user.comments.top()).body + "</h1>"
+	
+	#username=reddit.redditor(user)
 	result="<div style='width: 100%; overflow: hidden;'>"
 	result+="<div style='width:49%; float: left;'> <h3> Best Comment </h3> <p>"+ next(user.comments.top()).body +"</p> </div>"
 	result+="<div style='margin-left:50%'> <h3> Worst Comment </h3> <p>"+ next(user.comments.top()).body +"</p> </div>"
 	result+= "</div>"
-	return render_template('index.html', chart=result)
-	#consider using upvote_ratio for 
+	result+=mpld3.fig_to_html(fig)
 
+	return render_template('index.html', chart=result)
 
 
