@@ -57,3 +57,22 @@ def step_impl(context,category):
 def step_impl(context,url):
     browser = context.browser
     assert browser.current_url == ("http://surprisetech.pythonanywhere.com/r/tifu/" + url)
+
+@then(u'we should see radio buttons to select subreddit or user')
+def step_impl(context):
+    browser = context.browser
+    browser.find_element_by_xpath(".//*[@type='radio' and @value='subre\
+ddit']")
+    browser.find_element_by_xpath(".//*[@type='radio' and @value='user']")
+
+@then(u'we should have drop down box to select subreddit')
+def step_impl(context):
+    browser = context.browser
+    browser.find_element_by_id('category')
+
+@then(u'we should see a menu to select category')
+def step_impl(context):
+    browser = context.browser
+    dropDown = browser.find_element_by_id('category')
+    for row in context.table:
+        Select(dropDown).select_by_visible_text(row['category'])
