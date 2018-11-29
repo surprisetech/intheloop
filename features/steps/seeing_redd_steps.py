@@ -1,6 +1,7 @@
 from behave import *
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.select import Select
 import time
 
 @given(u'we are browsing surprisetech.pythonanywhere.com/')
@@ -41,8 +42,17 @@ def step_impl(context,category):
 @when(u"we type tifu in search box and select {category}")
 def step_impl(context,category):
     browser = context.browser
-    browser.find_element_by_id('r').click
+
+    Radio = browser.find_element_by_xpath(".//*[@type='radio' and @value='subreddit']")
+    Radio.click()
+
+    dropDown = browser.find_element_by_id('category')
+    Select(dropDown).select_by_visible_text(category)
+
     searchbox = browser.find_element_by_id("q")
     searchbox.send_keys("tifu")
-    browser.find_element_by_xpath("//select[@name='category']/option[text()='{category}']").click()
     searchbox.send_keys(Keys.RETURN)
+
+#@then(u"we should be at page surprisetech.pythonanywhere.com/count/tifu/{category}")
+#def step_impl(context,category):
+#    print ("hello world")
