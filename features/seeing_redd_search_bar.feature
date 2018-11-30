@@ -15,7 +15,7 @@ Feature: Search bar
        | Controversial All |
        | Controversial Day |
 
-  Scenario Outline: Search tifu Subreddit and hot <category>
+  Scenario Outline: Search tifu Subreddit and <category>
      Given we are browsing surprisetech.pythonanywhere.com/
        When we type tifu in search box and select <category>
        Then we should be at page surprisetech.pythonanywhere.com/r/tifu/<url>
@@ -26,3 +26,13 @@ Feature: Search bar
        | Top Day           | top24hrs           |
        | Controversial All | controversialall   |
        | Controversial Day | controversial24hrs |
+
+  Scenario Outline: Search user nasa and <category>
+    Given we are browsing surprisetech.pythonanywhere.com/
+      When we type user nasa in search box and select <category>
+      Then we should be at page surprisetech.pythonanywhere.com/u/nasa/<url>
+     Examples: Categories
+       | category          | url                |
+       | Hot               | hot                |
+       | Top All           | topalltime         |
+       | Top Day           | top24hrs           |
