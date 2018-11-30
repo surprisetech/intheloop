@@ -76,3 +76,23 @@ def step_impl(context):
     dropDown = browser.find_element_by_id('category')
     for row in context.table:
         Select(dropDown).select_by_visible_text(row['category'])
+
+@when(u"we type user nasa in search box and select {category}")
+def step_impl(context,category):
+    browser = context.browser
+
+    Radio = browser.find_element_by_xpath(".//*[@type='radio' and @value='user']")
+    Radio.click()
+
+    dropDown = browser.find_element_by_id('category')
+    Select(dropDown).select_by_visible_text(category)
+
+    searchbox = browser.find_element_by_id("q")
+    searchbox.send_keys("nasa")
+    searchbox.send_keys(Keys.RETURN)
+
+@then(u'we should be at page surprisetech.pythonanywhere.com/u/nasa/{url}')
+def step_impl(context,url):
+    browser = context.browser
+    assert browser.current_url == ("http://surprisetech.pythonanywhere.com/u/nasa/" + url)
+
