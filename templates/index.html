@@ -1,11 +1,11 @@
 <html>
     <head>
-        <link rel="stylesheet" href="/style.css" />
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
         <script>
-            //window.localStorage; //can we maintain the vars outside the functions to eliminate the duplicated code?
             function EnableDrop() { document.getElementById("onlyR").disabled=false; }
             function DisableDrop() { document.getElementById("onlyR").disabled=true; }
             function doSearch() {
+                //generates the correct destination from search inputs
                 var domain = window.location.protocol + "//" + window.location.host + "/";
                 var type = "";
                 var button1 = document.getElementById("r");
@@ -20,6 +20,7 @@
                 return false;
             }
             function goToReddit() {
+                //goes to the correct subreddit or user depending on the search inputs
                 var type = "";
                 var button1 = document.getElementById("r");
                 var button2 = document.getElementById("u");
@@ -28,7 +29,6 @@
                 } else if (button2.checked) {
                     type = "u/";
                 }
-                //there must be a better way than what i did below, can reddit api create these routes?
                 var cat = document.getElementById("category").value;
                 if (cat == "new" && type == "u/"){
                     cat = "?sort=new";
@@ -47,7 +47,6 @@
                     if (type = "r/") { cat = "controversial/?t=day"; }
                     else if (type = "u/") { cat = "?sort=controversial&t=day"; }
                 }
-                //i tried changing the switch values in app.py, it worked for the link to reddit but broke the search on our site
                 var dest = "https://www.reddit.com/" + type.valueOf() + document.getElementById("q").value + "/" + cat.valueOf();
                 confirm('Continue to the Reddit source of your search?');
                 window.location.href = dest.valueOf();
@@ -56,10 +55,7 @@
         </script>
     </head>
     <body>
-        <a href = "{{ url_for('index') }}">
-            <img src="{{ url_for('static', filename='logo.png') }}" alt="Seeing Redd Logo" style="position:fixed;top:0;right:0;padding:20px" width="300" height="100" />
-        </a>
-        <div class="head" style="position:fixed;top:0;left:0;padding:20px">
+        <div class="searchBar">
             <form id="redditSearch" onsubmit="return doSearch();">
                 <label>Search Seeing Redd:</label><br>
                 <label for="r">/r</label>
@@ -84,14 +80,19 @@
                 <input type="submit" value="submit">
             </form>
         </div>
-        <div>
+        <div> <!-- class="errors" -->
             {% block content %}
             {% endblock %}
         </div>
         <div class="chart">
             {{ chart | safe }}
         </div>
-        <div>
+        <div class="ourLogo">
+            <a href = "{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Seeing Redd Logo" width="300" height="100" />
+            </a>
+        </div>
+        <div> <!-- class="theirLogo" -->
             <a href="javascript:void(0)" onclick="goToReddit()">
                 Go to Reddit
                 <img src="https://upload.wikimedia.org/wikipedia/en/5/58/Reddit_logo_new.svg" alt="Reddit Logo">
