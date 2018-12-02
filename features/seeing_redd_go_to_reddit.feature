@@ -1,13 +1,13 @@
-Feature: Logo button returns to main page
-  Scenario: Logo button returns to welcome page for mainpage
+Feature: Go to reddit picture
+  Scenario: Reddit pictures goes to reddit.com
     Given we are browsing surprisetech.pythonanywhere.com/
-      When we select logo picture
-      Then we should be browsing surprisetech.pythonanywere.com
+      When we select reddit picture
+      Then we should be browsing reddit.com
 
-  Scenario Outline: Logo button returns to welcome page for /r/
+  Scenario Outline: Reddit picture goes to reddit.com/r/tifu/<category>
     Given we are browsing surprisetech.pythonanywhere.com/r/tifu/<category>
-      When we select logo picture
-      Then we should be browsing surprisetech.pythonanywere.com
+      When we select reddit picture
+      Then we should be browsing https://www.reddit.com/r/tifu/<category>
      Examples: Categories
        | category           |
        | new		    |
@@ -17,10 +17,10 @@ Feature: Logo button returns to main page
        | controversialall   |
        | controversial24hrs |
 
-  Scenario Outline: Logo button returns to welcome page for /u/
+  Scenario Outline: Reddit picture goes to reddit.com/u/nasa/<category>
     Given we are browsing surprisetech.pythonanywhere.com/u/nasa/<category>
-      When we select logo picture
-      Then we should be browsing surprisetech.pythonanywere.com
+      When we select reddit picture
+      Then we should be browsing https://www.reddit.com/u/nasa/<category>
      Examples: Categories
        | category           |
        | new		    |

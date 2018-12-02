@@ -5,7 +5,6 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 import time
 
 @given(u'we are browsing surprisetech.pythonanywhere.com/')
@@ -41,6 +40,13 @@ def step_impl(context,category):
     browser = webdriver.Chrome()
     context.browser = browser
     browser.get("http://surprisetech.pythonanywhere.com/r/tifu/" + category)
+    assert "mpld3" in browser.page_source
+
+@given(u'we are browsing surprisetech.pythonanywhere.com/u/nasa/{category}')
+def step_impl(context,category):
+    browser = webdriver.Chrome()
+    context.browser = browser
+    browser.get("http://surprisetech.pythonanywhere.com/u/nasa/" + category)
     assert "mpld3" in browser.page_source
 
 @when(u"we type tifu in search box and select {category}")
@@ -103,16 +109,32 @@ def step_impl(context,url):
 @when(u'we select logo picture')
 def step_impl(context):
     browser = context.browser
-    #picture = browser.find_element_by_id('/')
-    #picture = WebDriverWait(browser,10).until(EC.visibility_of_element_located((By.XPATH,'//a[img/@src="/logo.png"]')))
     picture = browser.find_element_by_css_selector("a[href='/']")
-    action = ActionChains(browser)
-    #action.move_to_element(picture).perform()
-    #action.click()
-    action.move_to_element(picture).perform()
-    picture.click
+    picture.send_keys("\n")    
 
 @then(u'we should be browsing surprisetech.pythonanywere.com')
 def step_impl(context):
     browser = context.browser
     assert 'Welcome to Seeing Redd.' in browser.page_source
+
+@when(u'we select reddit picture')
+def step_impl(context):
+    browser = context.browser
+    picture = browser.find_element_by_css_selector("a[href='javascript:void(0)']")
+    picture.click()
+    browser.switch_to_alert().accept()
+
+@then(u'we should be browsing reddit.com')
+def step_impl(context):
+    browser = context.browser
+    assert browser.current_url == "https://www.reddit.com/"
+
+@then(u'we should be browsing https://www.reddit.com/r/tifu/{category}')
+def step_impl(context, category):
+    browser = context.browser
+    assert browser.current_url == "https://www.reddit.com/r/tifu/" + category
+
+@then(u'we should be browsing https://www.reddit.com/u/nasa/{category}')
+def step_impl(context, category):
+    browser = context.browser
+    assert browser.current_url == "https://www.reddit.com/u/nasa/" + category
