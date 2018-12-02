@@ -1,6 +1,10 @@
 from behave import *
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.select import Select
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
 import time
 
 @given(u'we are browsing surprisetech.pythonanywhere.com/')
@@ -38,11 +42,99 @@ def step_impl(context,category):
     browser.get("http://surprisetech.pythonanywhere.com/r/tifu/" + category)
     assert "mpld3" in browser.page_source
 
+@given(u'we are browsing surprisetech.pythonanywhere.com/u/nasa/{category}')
+def step_impl(context,category):
+    browser = webdriver.Chrome()
+    context.browser = browser
+    browser.get("http://surprisetech.pythonanywhere.com/u/nasa/" + category)
+    assert "mpld3" in browser.page_source
+
 @when(u"we type tifu in search box and select {category}")
 def step_impl(context,category):
     browser = context.browser
-    browser.find_element_by_id('r').click
+
+    Radio = browser.find_element_by_xpath(".//*[@type='radio' and @value='subreddit']")
+    Radio.click()
+
+    dropDown = browser.find_element_by_id('category')
+    Select(dropDown).select_by_visible_text(category)
+
     searchbox = browser.find_element_by_id("q")
     searchbox.send_keys("tifu")
-    browser.find_element_by_xpath("//select[@name='category']/option[text()='{category}']").click()
     searchbox.send_keys(Keys.RETURN)
+
+@then(u'we should be at page surprisetech.pythonanywhere.com/r/tifu/{url}')
+def step_impl(context,url):
+    browser = context.browser
+    assert browser.current_url == ("http://surprisetech.pythonanywhere.com/r/tifu/" + url)
+
+@then(u'we should see radio buttons to select subreddit or user')
+def step_impl(context):
+    browser = context.browser
+    browser.find_element_by_xpath(".//*[@type='radio' and @value='subre\
+ddit']")
+    browser.find_element_by_xpath(".//*[@type='radio' and @value='user']")
+
+@then(u'we should have drop down box to select subreddit')
+def step_impl(context):
+    browser = context.browser
+    browser.find_element_by_id('category')
+
+@then(u'we should see a menu to select category')
+def step_impl(context):
+    browser = context.browser
+    dropDown = browser.find_element_by_id('category')
+    for row in context.table:
+        Select(dropDown).select_by_visible_text(row['category'])
+
+@when(u"we type user nasa in search box and select {category}")
+def step_impl(context,category):
+    browser = context.browser
+
+    Radio = browser.find_element_by_xpath(".//*[@type='radio' and @value='user']")
+    Radio.click()
+
+    dropDown = browser.find_element_by_id('category')
+    Select(dropDown).select_by_visible_text(category)
+
+    searchbox = browser.find_element_by_id("q")
+    searchbox.send_keys("nasa")
+    searchbox.send_keys(Keys.RETURN)
+
+@then(u'we should be at page surprisetech.pythonanywhere.com/u/nasa/{url}')
+def step_impl(context,url):
+    browser = context.browser
+    assert browser.current_url == ("http://surprisetech.pythonanywhere.com/u/nasa/" + url)
+
+@when(u'we select logo picture')
+def step_impl(context):
+    browser = context.browser
+    picture = browser.find_element_by_css_selector("a[href='/']")
+    picture.send_keys("\n")    
+
+@then(u'we should be browsing surprisetech.pythonanywere.com')
+def step_impl(context):
+    browser = context.browser
+    assert 'Welcome to Seeing Redd.' in browser.page_source
+
+@when(u'we select reddit picture')
+def step_impl(context):
+    browser = context.browser
+    picture = browser.find_element_by_css_selector("a[href='javascript:void(0)']")
+    picture.click()
+    browser.switch_to_alert().accept()
+
+@then(u'we should be browsing reddit.com')
+def step_impl(context):
+    browser = context.browser
+    assert browser.current_url == "https://www.reddit.com/"
+
+@then(u'we should be browsing https://www.reddit.com/r/tifu/{category}')
+def step_impl(context, category):
+    browser = context.browser
+    assert browser.current_url == "https://www.reddit.com/r/tifu/" + category
+
+@then(u'we should be browsing https://www.reddit.com/u/nasa/{category}')
+def step_impl(context, category):
+    browser = context.browser
+    assert browser.current_url == "https://www.reddit.com/u/nasa/" + category

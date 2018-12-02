@@ -28,11 +28,7 @@ reddit = praw.Reddit(client_id=RedditConfig.id,
 def index():
 	return render_template('index.html', chart="""
 	Welcome to Seeing Redd. 
-	Please navigate to 
-	<a>/r/{subreddit-name}/hot</a>
-	or
-	<a>/u/{username}</a>
-	to see more.
+	Please use the search bar to navigate to see more.
 	""")
 
 def newPosts(searchbase):
@@ -88,7 +84,8 @@ def wordCountSubreddit(sr, category):
 
 	fig = plt.figure()
 	if sortedWords:
-	# Generate Chart
+		
+		# Generate Chart
 		plt.subplot(1, 2, 1)
 		plt.bar(range(len(labels)), values, tick_label=labels)
 		ax1 = fig.add_subplot(121)
@@ -97,18 +94,18 @@ def wordCountSubreddit(sr, category):
 		y_rotate=ax1.set_ylabel('Instances')
 		y_rotate.set_rotation(0)
 		ax1.set_title('/r/' + str(subreddit))
-	# Generate Word Cloud
+		
+		# Generate Word Cloud
 		plt.subplot(1, 2, 2)
 		text = str(sortedWords)
 		text = text.replace("'", "")
-		wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
+		wordcloud = WordCloud(width=1000, height=1000, margin=0).generate(text)
 		plt.imshow(wordcloud, interpolation='bilinear')
 		plt.axis("off")
 		plt.margins(x=0, y=0)
+		
 	else:
-		plt.text(0.5,0.5,'There are no posts for the selected search.')
-		#can make this route to one of the error pages
-		#or have it suggest similar search like /u instead of /r etc
+		plt.text(0.5,0.5,'There are no posts for the selected search.\nDid you mean to search for /r?', horizontalalignment='center', verticalalignment='center')
 
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
 
@@ -163,9 +160,9 @@ def wordCountUser(user, category):
 	if sortedWords:
 		
 		# Generate Chart
-		plt.subplot(2, 2, 1)
+		plt.subplot(3, 1, 2)
 		plt.bar(range(len(labels)), values, tick_label=labels)
-		ax1 = fig.add_subplot(121)
+		ax1 = fig.add_subplot(312)
 		fig.subplots_adjust(top=0.85)
 		ax1.set_xlabel('Word')
 		y_rotate=ax1.set_ylabel('Instances')
@@ -173,18 +170,18 @@ def wordCountUser(user, category):
 		ax1.set_title('/u/' + str(user))
 		
 		# Generate Word Cloud
-		plt.subplot(2, 2, 2)
+		plt.subplot(3, 1, 1)
 		text = str(sortedWords)
 		text = text.replace("'", "")
-		wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
+		wordcloud = WordCloud(width=1000, height=1000, margin=0).generate(text)
 		plt.imshow(wordcloud, interpolation='bilinear')
 		plt.axis("off")
 		plt.margins(x=0, y=0)
 		
 		#Generate plot of subreddits user is active in.
-		plt.subplot(2, 2, 3)
+		plt.subplot(3, 1, 3)
 		plt.bar(range(len(srLabels)), srValues, tick_label=srLabels)
-		ax2 = fig.add_subplot(223)
+		ax2 = fig.add_subplot(313)
 		#fig.subplots_adjust(top=0.85)
 		ax2.set_xlabel('Subreddits')
 		y_rotate=ax2.set_ylabel('Posts')
@@ -192,8 +189,6 @@ def wordCountUser(user, category):
 		ax2.set_title('Posts per Subreddit')
 
 	else:
-		plt.text(0.5,0.5,'There are no posts for the selected search.')
-		#can make this route to one of the error pages
-		#or have it suggest similar search like /u instead of /r etc
+		plt.text(0.5,0.5,'There are no posts for the selected search.\nDid you mean to search for /r?', horizontalalignment='center', verticalalignment='center')
 
 	return render_template('index.html', chart=mpld3.fig_to_html(fig))
