@@ -46,7 +46,7 @@ def step_impl(context,category):
 def step_impl(context,category):
     browser = webdriver.Chrome()
     context.browser = browser
-    browser.get("http://surprisetech.pythonanywhere.com/r/nasa/" + category)
+    browser.get("http://surprisetech.pythonanywhere.com/u/nasa/" + category)
     assert "mpld3" in browser.page_source
 
 @when(u"we type tifu in search box and select {category}")
@@ -110,10 +110,31 @@ def step_impl(context,url):
 def step_impl(context):
     browser = context.browser
     picture = browser.find_element_by_css_selector("a[href='/']")
-    picture.send_keys("\n")
-    
+    picture.send_keys("\n")    
 
 @then(u'we should be browsing surprisetech.pythonanywere.com')
 def step_impl(context):
     browser = context.browser
     assert 'Welcome to Seeing Redd.' in browser.page_source
+
+@when(u'we select reddit picture')
+def step_impl(context):
+    browser = context.browser
+    picture = browser.find_element_by_css_selector("a[href='javascript:void(0)']")
+    picture.click()
+    browser.switch_to_alert().accept()
+
+@then(u'we should be browsing reddit.com')
+def step_impl(context):
+    browser = context.browser
+    assert browser.current_url == "https://www.reddit.com/"
+
+@then(u'we should be browsing https://www.reddit.com/r/tifu/{category}')
+def step_impl(context, category):
+    browser = context.browser
+    assert browser.current_url == "https://www.reddit.com/r/tifu/" + category
+
+@then(u'we should be browsing https://www.reddit.com/u/nasa/{category}')
+def step_impl(context, category):
+    browser = context.browser
+    assert browser.current_url == "https://www.reddit.com/u/nasa/" + category
