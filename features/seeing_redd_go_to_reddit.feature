@@ -1,5 +1,5 @@
 Feature: Go to reddit picture
-  Scenario: Logo button returns to welcome page for mainpage
+  Scenario: Reddit pictures goes to reddit.com
     Given we are browsing surprisetech.pythonanywhere.com/
       When we select reddit picture
       Then we should be browsing reddit.com

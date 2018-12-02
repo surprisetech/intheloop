@@ -9,6 +9,7 @@ Feature: Search bar
     Then  we should have drop down box to select subreddit
       Then we should see a menu to select category
        | category          |
+       | New		   |
        | Hot               |
        | Top All           |
        | Top Day           |
@@ -21,6 +22,7 @@ Feature: Search bar
        Then we should be at page surprisetech.pythonanywhere.com/r/tifu/<url>
      Examples: Categories
        | category          | url                |
+       | New		   | new		|
        | Hot               | hot                |
        | Top All           | topalltime         |
        | Top Day           | top24hrs           |
@@ -33,6 +35,7 @@ Feature: Search bar
       Then we should be at page surprisetech.pythonanywhere.com/u/nasa/<url>
      Examples: Categories
        | category          | url                |
+       | New		   | new		|
        | Hot               | hot                |
        | Top All           | topalltime         |
        | Top Day           | top24hrs           |

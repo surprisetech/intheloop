@@ -10,6 +10,7 @@ Feature: Logo button returns to main page
       Then we should be browsing surprisetech.pythonanywere.com
      Examples: Categories
        | category           |
+       | new		    |
        | hot                |
        | topalltime         |
        | top24hrs           |
@@ -22,6 +23,7 @@ Feature: Logo button returns to main page
       Then we should be browsing surprisetech.pythonanywere.com
      Examples: Categories
        | category           |
+       | new		    |
        | hot                |
        | topalltime         |
        | top24hrs           |
