@@ -163,9 +163,9 @@ def wordCountUser(user, category):
 	if sortedWords:
 		
 		# Generate Chart
-		plt.subplot(2, 2, 1)
+		plt.subplot(3, 1, 1)
 		plt.bar(range(len(labels)), values, tick_label=labels)
-		ax1 = fig.add_subplot(121)
+		ax1 = fig.add_subplot(311)
 		fig.subplots_adjust(top=0.85)
 		ax1.set_xlabel('Word')
 		y_rotate=ax1.set_ylabel('Instances')
@@ -173,7 +173,7 @@ def wordCountUser(user, category):
 		ax1.set_title('/u/' + str(user))
 		
 		# Generate Word Cloud
-		plt.subplot(2, 2, 2)
+		plt.subplot(3, 1, 2)
 		text = str(sortedWords)
 		text = text.replace("'", "")
 		wordcloud = WordCloud(width=480, height=480, margin=0).generate(text)
@@ -182,9 +182,9 @@ def wordCountUser(user, category):
 		plt.margins(x=0, y=0)
 		
 		#Generate plot of subreddits user is active in.
-		plt.subplot(2, 2, 3)
+		plt.subplot(3, 1, 3)
 		plt.bar(range(len(srLabels)), srValues, tick_label=srLabels)
-		ax2 = fig.add_subplot(223)
+		ax2 = fig.add_subplot(313)
 		#fig.subplots_adjust(top=0.85)
 		ax2.set_xlabel('Subreddits')
 		y_rotate=ax2.set_ylabel('Posts')

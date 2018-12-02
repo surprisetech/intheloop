@@ -9,9 +9,41 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 30px;
+    z-index: 1;
 }
 
 .chart {
     background-color: #95190c;
     margin: 0 auto;
+    z-index: 1;
+}
+
+.searchBar {
+    overflow: hidden;
+    color: #141414;
+    background-color: #95190c;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    width: 100%;
+    margin: auto;
+    z-index: 999; /* ensures its on top of other elements */
+}
+
+#redditSearch {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.ourLogo {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    padding: 20px;
+    /* width: 300px;
+    height: 100px;
+    max-width: 300px;
+    max-height: 100px; */
 }
