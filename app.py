@@ -108,10 +108,12 @@ def wordCountSubreddit(sr, category):
 		#placeholder until we have a useful empty result page
 
 	#top post by subreddit
-	result="<div style='width: 100%; overflow: hidden;'>"
-	result+="<div style='width:75%; float: left;'> <h3> Top Post </h3> <p>"+ next(funct(subreddit)).title +"</p> </div>"
+	result=mpld3.fig_to_html(fig)
+	result+="<div style='width: 100%; overflow: hidden;'>"
+	result+="<div style='width:75%; float: left;'> <h3> Top Post- with a score of: " 
+	result+= str(next(funct(subreddit)).score) + "</h3> <p> <h4> User: u/" + str(next(funct(subreddit)).author) + "</h4>"
+	result+= "<h3> Title: </h3> <p>"+ next(funct(subreddit)).title+ "</p> </div>"
 	result+= "</div>"
-	result+=mpld3.fig_to_html(fig)
 	
 	#made result object to make it easier to build output
 	return render_template('index.html', chart=result)
@@ -162,11 +164,11 @@ def wordCountUser(user, category):
 		#placeholder until we have a useful empty result page
 	
 	#top post by user
-	result="<div style='width: 100%; overflow: hidden;'>"
-	result+="<div style='width:49%; float: left;'> <h3> Best Comment </h3> <p>"+ next(funct(user.comments)).body +"</p> </div>"
-	result+="<div style='margin-left:50%'> <h3> Worst Comment----TBD </h3> </div>"
+	result=mpld3.fig_to_html(fig)
+	result+="<div style='width: 100%; overflow: hidden;'>"
+	result+= "<div style='width:100%; float: left;'> <h3>Best Comment of: " +str(user) +"</h3>"
+	result+= "<h3> Found in: r/"+ comment.subreddit.display_name +" </h3> <p> '" + next(funct(user.comments)).body +"' </p> </div>"
 	result+= "</div>"
-	result+=mpld3.fig_to_html(fig)
 	
 	#made result object to make it easier to build output
 	return render_template('index.html', chart=result)
