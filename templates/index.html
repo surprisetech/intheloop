@@ -22,35 +22,31 @@
             }
             function goToReddit() {
                 //goes to the correct subreddit or user depending on the search inputs
-                // refactor to use regex for url instead of forms
-                // var reg = /([ru])\/([^\/]+)\/([^\/]+)$/;
-                // /1
-
-                var type = "";
-                var button1 = document.getElementById("r");
-                var button2 = document.getElementById("u");
-                if (button1.checked) {
-                    type = "r/";
-                } else if (button2.checked) {
-                    type = "u/";
+                var dest = "https://www.reddit.com/";
+                var temp = window.location.pathname;
+                var reg = /([ru])\/([^\/]+)\/([^\/]+)$/;
+                var found = temp.match(reg);
+                if(found){
+                    var type = found[1] + "/";
+                    var q = found[2] + "/";
+                    var cat = found[3];
+                    if (cat == "new" && type == "u/"){
+                        cat = "?sort=new";
+                    } else if (cat == "hot" && type == "u/"){
+                        cat = "?sort=hot";
+                    } else if (cat == "topalltime"){
+                        if (type = "r/") { cat = "top/?t=all"; }
+                        else if (type = "u/") { cat = "?sort=top&t=all"; }
+                    } else if (cat == "top24hrs"){
+                        if (type = "r/") { cat = "top/?t=day"; }
+                        else if (type = "u/") { cat = "?sort=top&t=day"; }
+                    } else if (cat == "controversialall" && type == "r/"){
+                        cat = "controversial/?t=all";
+                    } else if (cat == "controversial24hrs" && type == "r/"){
+                        cat = "controversial/?t=day";
+                    }
+                    dest += (type.valueOf() + q.valueOf() + cat.valueOf());
                 }
-                var cat = document.getElementById("category").value;
-                if (cat == "new" && type == "u/"){
-                    cat = "?sort=new";
-                } else if (cat == "hot" && type == "u/"){
-                    cat = "?sort=hot";
-                } else if (cat == "topalltime"){
-                    if (type = "r/") { cat = "top/?t=all"; }
-                    else if (type = "u/") { cat = "?sort=top&t=all"; }
-                } else if (cat == "top24hrs"){
-                    if (type = "r/") { cat = "top/?t=day"; }
-                    else if (type = "u/") { cat = "?sort=top&t=day"; }
-                } else if (cat == "controversialall" && type == "r/"){
-                    cat = "controversial/?t=all";
-                } else if (cat == "controversial24hrs" && type == "r/"){
-                    cat = "controversial/?t=day";
-                }
-                var dest = "https://www.reddit.com/" + type.valueOf() + document.getElementById("q").value + "/" + cat.valueOf();
                 confirm('Continue to the Reddit source of your search?');
                 window.location.href = dest.valueOf();
                 return false;
