@@ -28,13 +28,10 @@ def totalKarmaOfWords(wordList, funct, subreddit):
     :return: A list containing pairs, the first object of the pair is the word, and the second
              is the total score for that word.
     """
-    #this still needs to be fixed
-    totalKarma = 0
     karmaList = list()
-    submissions = funct(subreddit)
     for word in wordList:
         totalKarma = 0
-        for submission in submissions:
+        for submission in funct(subreddit):
             post = (submission.selftext + " " + submission.title)
             if word[0] in post:
                 totalKarma += submission.score
@@ -42,15 +39,26 @@ def totalKarmaOfWords(wordList, funct, subreddit):
     #print(karmaList)
     return karmaList
 
+#Shows the users that have posted within the searched subreddit
 def contributorsToSubreddit(funct, subreddit):
     submissions = funct(subreddit)
     contributors = filter(lambda x: x != None, [x.author for x in submissions])
     return contributors
 
+#Compare words user posts in a subreddit to their other subreddits
+#can this be added to the /u search?
+def compareUserReddits(user, sr, category, funct, subreddit):
+    submissions = funct(subreddit)
+    posts = list()
+    for i in submissions:
+        if i.author.name == user:
+            posts.append(i.selftext + " " + i.title)
+    return posts[0]
+
 punctRm = str.maketrans('', '', string.punctuation + "“”’")
 excludeWordsList = ['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'on',
                     'at', 'to', 'from', 'by', 'we', 'of', 'as', 'do', 'up', 'if', 'i', 'you', 'are', 'they',
                     'it', 'our', 'be', 'is', 'in', 'my', 'with', 'have', 'has', 'no', 'how', 'was', 'very',
-                    'this', 'he', 'that', 'it\'s', 'cunt', 'fuck', 'like', 'not', 'your', 'don\'t', 'she',
+                    'this', 'he', 'that', 'it\'s', 'him', 'like', 'not', 'your', 'don\'t', 'she',
                     'his', 'her', 'just', 'when', 'so', 'got', 'get', 'what', 'why', 'who', 'how', 'would',
                     'should', 'could', 'some', 'can', 'you\'re', 'about', 'which', 'had', 'want', 'made']
