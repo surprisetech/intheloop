@@ -1,12 +1,14 @@
 <html>
     <head>
-        <link rel="stylesheet" href="/style.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
         <script>
             function EnableDrop() { document.getElementById("onlyR").disabled=false; }
             function DisableDrop() { document.getElementById("onlyR").disabled=true; }
             function doSearch() {
-                var type = "";
+                //generates the correct destination from search inputs
                 var domain = window.location.protocol + "//" + window.location.host + "/";
+                var type = "";
                 var button1 = document.getElementById("r");
                 var button2 = document.getElementById("u");
                 if (button1.checked) {
@@ -18,37 +20,86 @@
                 location.href = url;
                 return false;
             }
+            function goToReddit() {
+                //goes to the correct subreddit or user depending on the search inputs
+                // refactor to use regex for url instead of forms
+                // var reg = /([ru])\/([^\/]+)\/([^\/]+)$/;
+                // /1
+
+                var type = "";
+                var button1 = document.getElementById("r");
+                var button2 = document.getElementById("u");
+                if (button1.checked) {
+                    type = "r/";
+                } else if (button2.checked) {
+                    type = "u/";
+                }
+                var cat = document.getElementById("category").value;
+                if (cat == "new" && type == "u/"){
+                    cat = "?sort=new";
+                } else if (cat == "hot" && type == "u/"){
+                    cat = "?sort=hot";
+                } else if (cat == "topalltime"){
+                    if (type = "r/") { cat = "top/?t=all"; }
+                    else if (type = "u/") { cat = "?sort=top&t=all"; }
+                } else if (cat == "top24hrs"){
+                    if (type = "r/") { cat = "top/?t=day"; }
+                    else if (type = "u/") { cat = "?sort=top&t=day"; }
+                } else if (cat == "controversialall" && type == "r/"){
+                    cat = "controversial/?t=all";
+                } else if (cat == "controversial24hrs" && type == "r/"){
+                    cat = "controversial/?t=day";
+                }
+                var dest = "https://www.reddit.com/" + type.valueOf() + document.getElementById("q").value + "/" + cat.valueOf();
+                confirm('Continue to the Reddit source of your search?');
+                window.location.href = dest.valueOf();
+                return false;
+            }
         </script>
     </head>
     <body>
-        <div class="head" style="position:fixed;top:0;left:0;padding:20px">
+        <div class="topBar">
             <form id="redditSearch" onsubmit="return doSearch();">
                 <label>Search Seeing Redd:</label><br>
                 <label for="r">/r</label>
                     <input type="radio" name="page" id="r" value="subreddit" onclick="EnableDrop();">
                 <label for="u">/u</label>
                     <input type="radio" name="page" id="u" value="user" onclick="DisableDrop();">
-                <input type="search" name="url" id="q">
+                <input type="search" name="url" id="q" placeholder="Search...">
                 <select id="category" form="redditSearch">
                     <optgroup id="RorU" label="R or U">
                         <option value="new">New</option>
-                        <option value="hot">Hot</option>
+                        <option value="hot" selected>Hot</option>
                         <option value="topalltime">Top All</option>
-                        <option value="top24hrs">Top 24</option>
+                        <option value="top24hrs">Top Day</option>
                     </optgroup>
                     <optgroup id="onlyR" label="only R">
                         <option value="controversialall">Controversial All</option>
-                        <option value="controversial24hrs">Controversial 24</option>
+                        <option value="controversial24hrs">Controversial Day</option>
                     </optgroup>
-                </select><br>
-                <input type="submit" value="submit">
+                </select>
+                <button type="submit" id="btn"><i class="fa fa-search"></i></button>
             </form>
+            <div class="ourLogo">
+                <a href = "{{ url_for('index') }}">
+                    <img src="{{ url_for('static', filename='logo.png') }}" alt="Seeing Redd Logo" width="300" height="100" />
+                </a>
+            </div>
+            <div class="theirLogo">
+                <a href="javascript:void(0)" onclick="goToReddit()">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/5/58/Reddit_logo_new.svg" alt="Reddit Logo">
+                </a>
+            </div>
         </div>
-
-        <div class="chart">{{ chart | safe }}</div>
+        <div> <!-- class="errors" -->
+            {% block content %}
+            {% endblock %}
+        </div>
+        <div class="chart">
+            {{ chart | safe }}
+        </div>
         {% for item in data %}
             {{ item }}<br/>
         {% endfor %}
-        <!-- <div class="cloud">{{ cloud | safe }}</div> -->
     </body>
 </html>
