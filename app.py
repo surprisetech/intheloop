@@ -110,8 +110,8 @@ def wordCountSubreddit(sr, category):
 	#top post by subreddit
 	result=mpld3.fig_to_html(fig)
 	result+="<div style='width: 100%; overflow: hidden;'>"
-	result+="<div style='width:75%; float: left;'> <h3> Top Post- with a score of: " 
-	result+= str(next(funct(subreddit)).score) + "</h3> <p> <h4> User: u/" + str(next(funct(subreddit)).author) + "</h4>"
+	result+="<div style='width:75%; float: left;'> <h3> Top Post in: " +str(subreddit)
+	result+= " With a score of: " + str(next(funct(subreddit)).score) + "</h3> <p> <h4> User: u/" + str(next(funct(subreddit)).author) + "</h4>"
 	result+= "<h3> Title: </h3> <p>"+ next(funct(subreddit)).title+ "</p> </div>"
 	result+= "</div>"
 	
