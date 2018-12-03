@@ -3,7 +3,7 @@ from wordcloud import WordCloud
 import matplotlib.pyplot as plt, mpld3
 from flask import Flask, send_file, json, render_template
 import praw
-from wordOps import countWords, punctRm, excludeWordsList, totalKarmaOfWords
+from wordOps import countWords, punctRm, excludeWordsList, totalKarmaOfWords, contributorsToSubreddit
 from config import RedditConfig
 
 # Send "public/any.name" when route "<site>.com/{any.name}" is hit
@@ -55,16 +55,7 @@ switch = {"new": lambda x: newPosts(x),
 		  "top24hrs": lambda x: topPostsPast24Hours(x),
 		  "controversialall": lambda x: controversialPostsAllTime(x),
 		  "controversial24hrs": lambda x: controversialPast24Hours(x),
-		  #how can we refactor these to work with the changes in the index function?
 }
-
-@app.route('/r/<sr>/contributors/<category>')
-def contributorsToSubreddit(sr, category):
-	funct = switch.get(category)
-	subreddit = reddit.subreddit(sr)
-	submissions = funct(subreddit)
-	contributers = filter(lambda x: x != None, [x.author for x in submissions])
-	return render_template('index.html', data=contributers)
 
 @app.route('/r/<sr>/<category>')
 def wordCountSubreddit(sr, category):
@@ -74,21 +65,25 @@ def wordCountSubreddit(sr, category):
 	posts = list(map(lambda x: x.selftext + " " + x.title, submissions))
 	sortedWords = countWords(posts, punctRm, excludeWordsList)
 	sortedWords = sortedWords[:50]
-	#Here is likely where you want to figure out karma of words
-	#totalKarmaOfWords(sortedWords, submissions)
+	#totalKarmaOfWords(sortedWords, funct, subreddit)
+	contributors = contributorsToSubreddit(funct, subreddit)
+	contList = ""
+	for c in contributors:
+		contList+=str(c.name) + "\n"
 	labels = list()
 	values = list()
 	for word in sortedWords:
 		labels.append(word[0])
 		values.append(word[1])
 
-	fig = plt.figure()
+	fig = plt.figure(figsize=(10,20))
+	plt.rcParams.update({'font.size': 20})
 	if sortedWords:
 		
 		# Generate Chart
-		plt.subplot(1, 2, 1)
+		plt.subplot(3, 1, 2)
 		plt.bar(range(len(labels)), values, tick_label=labels)
-		ax1 = fig.add_subplot(121)
+		ax1 = fig.add_subplot(312)
 		fig.subplots_adjust(top=0.85)
 		ax1.set_xlabel('Word')
 		y_rotate=ax1.set_ylabel('Instances')
@@ -96,13 +91,21 @@ def wordCountSubreddit(sr, category):
 		ax1.set_title('/r/' + str(subreddit))
 		
 		# Generate Word Cloud
-		plt.subplot(1, 2, 2)
+		plt.subplot(3, 1, 1)
 		text = str(sortedWords)
 		text = text.replace("'", "")
 		wordcloud = WordCloud(width=1000, height=1000, margin=0).generate(text)
 		plt.imshow(wordcloud, interpolation='bilinear')
 		plt.axis("off")
 		plt.margins(x=0, y=0)
+
+		# Generate Contributors
+		#refactor this as a div like best/worst?
+		#or need to get the list of names more viewable within the chart
+		plt.subplot(3, 1, 3)
+		ax2 = fig.add_subplot(313)
+		ax2.set_title('Contributors')
+		plt.text(0.5, 0.5, contList, horizontalalignment='center', verticalalignment='center')
 		
 	else:
 		plt.text(0.5,0.5,'There are no posts for the selected search.\nDid you mean to search for /r?', horizontalalignment='center', verticalalignment='center')
@@ -141,8 +144,7 @@ def wordCountUser(user, category):
 		subredditStrings.append(str(sub.subreddit))
 	sortedWords = countWords(usersText, punctRm, excludeWordsList)
 	sortedWords = sortedWords[:50]
-	#Here is likely where you want to figure out karma of words
-	#totalKarmaOfWords(sortedWords, submissions)
+	#totalKarmaOfWords(sortedWords, funct, subreddit)
 	labels = list()
 	values = list()
 	for word in sortedWords:
@@ -156,7 +158,8 @@ def wordCountUser(user, category):
 		srLabels.append(word[0])
 		srValues.append(word[1])
 	
-	fig = plt.figure()
+	fig = plt.figure(figsize=(10,20))
+	plt.rcParams.update({'font.size': 20})
 	if sortedWords:
 		
 		# Generate Chart
