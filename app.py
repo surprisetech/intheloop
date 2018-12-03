@@ -88,24 +88,16 @@ def wordCountSubreddit(sr, category):
 		# Generate Chart
 		plt.subplot(1, 2, 1)
 		plt.bar(range(len(labels)), values, tick_label=labels)
-<<<<<<< HEAD
-		ax1 = fig.add_subplot(121) #changed from 111
-=======
 		ax1 = fig.add_subplot(121)
->>>>>>> master
+
 		fig.subplots_adjust(top=0.85)
 		ax1.set_xlabel('Word')
 		y_rotate=ax1.set_ylabel('Instances')
 		y_rotate.set_rotation(0)
-<<<<<<< HEAD
-	# Generate Word Cloud
-		plt.subplot(1, 2, 2) #originally 122
-=======
 		ax1.set_title('/r/' + str(subreddit))
 		
 		# Generate Word Cloud
-		plt.subplot(1, 2, 2)
->>>>>>> master
+		plt.subplot(1, 2, 2) #made it =ax
 		text = str(sortedWords)
 		text = text.replace("'", "")
 		wordcloud = WordCloud(width=1000, height=1000, margin=0).generate(text)
@@ -118,10 +110,10 @@ def wordCountSubreddit(sr, category):
 
 	#top post by subreddit
 	result=mpld3.fig_to_html(fig)
-	result+="<div style='width: 100%; overflow: hidden;'>"
-	result+="<div style='width:75%; float: left;'> <h3> Top Post in: " +str(subreddit)
-	result+= " With a score of: " + str(next(funct(subreddit)).score) + "</h3> <p> <h4> User: u/" + str(next(funct(subreddit)).author) + "</h4>"
-	result+= "<h3> Title: </h3> <p>"+ next(funct(subreddit)).title+ "</p> </div>"
+	result+="<div style='width: 100%; overflow: hidden;' class='comment' >"
+	result+="<div style='width:75%; float: left;'> <h3> Top Post in: r/" +str(subreddit)
+	result+= " With a score of: " + str(next(funct(subreddit)).score) + "</h3> <p> <h3> User: u/" + str(next(funct(subreddit)).author) + "</h3>"
+	result+= "<h3> Title: </h3> <p>'"+ next(funct(subreddit)).title+ "'</p> </div>"
 	result+= "</div>"
 	
 	#made result object to make it easier to build output
@@ -177,31 +169,19 @@ def wordCountUser(user, category):
 	
 	fig = plt.figure()
 	if sortedWords:
-<<<<<<< HEAD
-	# Generate Chart
-		plt.subplot(1, 2, 1) #change to specific one
-		plt.bar(range(len(labels)), values, tick_label=labels)
-		ax1 = fig.add_subplot(121)
-=======
 		
 		# Generate Chart
 		plt.subplot(3, 1, 2)
 		plt.bar(range(len(labels)), values, tick_label=labels)
 		ax1 = fig.add_subplot(312)
->>>>>>> master
 		fig.subplots_adjust(top=0.85)
 		ax1.set_xlabel('Word')
 		y_rotate=ax1.set_ylabel('Instances')
 		y_rotate.set_rotation(0)
-<<<<<<< HEAD
-	# Generate Word Cloud
-		plt.subplot(1,2,2) #originally 122
-=======
 		ax1.set_title('/u/' + str(user))
 		
 		# Generate Word Cloud
 		plt.subplot(3, 1, 1)
->>>>>>> master
 		text = str(sortedWords)
 		text = text.replace("'", "")
 		wordcloud = WordCloud(width=1000, height=1000, margin=0).generate(text)
@@ -220,21 +200,15 @@ def wordCountUser(user, category):
 		ax2.set_title('Posts per Subreddit')
 
 	else:
-<<<<<<< HEAD
-		plt.text(0.5,0.5,'stuff')
-		#placeholder until we have a useful empty result page
+		plt.text(0.5,0.5,'There are no posts for the selected search.\nDid you mean to search for /r?', horizontalalignment='center', verticalalignment='center')
+
 	
 	#top post by user
 	result=mpld3.fig_to_html(fig)
-	result+="<div style='width: 100%; overflow: hidden;'>"
-	result+= "<div style='width:100%; float: left;'> <h3>Best Comment of: " +str(user) +"</h3>"
+	result+="<div style='width: 100%; overflow: hidden;' class='comment'>"
+	result+= "<div style='width:100%; float: left;'> <h3>Best Comment of: u/" +str(user) +"</h3>"
 	result+= "<h3> Found in: r/"+ comment.subreddit.display_name +" </h3> <p> '" + next(funct(user.comments)).body +"' </p> </div>"
 	result+= "</div>"
 	
 	#made result object to make it easier to build output
 	return render_template('index.html', chart=result)
-=======
-		plt.text(0.5,0.5,'There are no posts for the selected search.\nDid you mean to search for /r?', horizontalalignment='center', verticalalignment='center')
-
-	return render_template('index.html', chart=mpld3.fig_to_html(fig))
->>>>>>> master
