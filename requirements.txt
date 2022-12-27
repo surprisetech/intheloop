@@ -28,7 +28,7 @@ matplotlib==2.2.3
 cycler==0.10.0
 six==1.11.0
 kiwisolver==1.0.1
-setuptools==40.2.0
+setuptools==65.5.1
 numpy==1.15.1
 pyparsing==2.2.0
 python-dateutil==2.7.3
